@@ -14,11 +14,6 @@ resource "aws_route_tables" "public" {
 resource "aws_route_tables" "private" {
     vpc_id = aws_vpc.private.id
 
-    route {
-        cidr_block = "0.0.0.0/0"
-        nat_gateway_id = aws_nat_gateway.main.id
-    }
-
     tags = merge(var.tags, {
         Name = "${var.env}-private-route-table"
     })

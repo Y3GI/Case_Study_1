@@ -75,3 +75,23 @@ variable "azs" {
     type = list(string)
     default = ["eu-central-1a"]
 }
+
+# VPN certificate variable
+
+variable "server_cert_arn" {
+    description = "ARN of the certificate to use for VPN connections"
+    type        = string
+    default     = ""
+}
+
+variable "client_cert_arn" {
+    description = "ARN of the certificate to use for VPN client authentication"
+    type        = string
+    default     = ""
+}
+
+variable "vpn_cidr_block" {
+    description = "The CIDR block for the VPN clients"
+    type        = string
+    default     = "10.100.0.0/24"
+}
