@@ -1,4 +1,4 @@
-resource "aws_route_tables" "public" {
+resource "aws_route_table" "public" {
     vpc_id = aws_vpc.public.id
 
     route {
@@ -11,7 +11,7 @@ resource "aws_route_tables" "public" {
     })
 }
 
-resource "aws_route_tables" "private" {
+resource "aws_route_table" "private" {
     vpc_id = aws_vpc.private.id
 
     tags = merge(var.tags, {
@@ -23,12 +23,12 @@ resource "aws_route_table_association" "public" {
     for_each = aws_subnet.public
 
     subnet_id = each.value.id
-    route_table_id = aws_route_tables.public.id
+    route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "private" {
     for_each = aws_subnet.private
 
     subnet_id = each.value.id
-    route_table_id = aws_route_tables.private.id
+    route_table_id = aws_route_table.private.id
 }

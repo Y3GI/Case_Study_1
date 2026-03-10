@@ -41,9 +41,13 @@ variable "public_subnet_cidrs" {
         az         = string
     }))
     default     = {
-        "subnet1" = {
+        "alb_subnet1" = {
             cidr_block = "10.1.1.0/24"
             az         = "eu-central-1a"
+        }
+        "alb_subnet2" = {
+            cidr_block = "10.1.2.0/24"
+            az         = "eu-central-1b"
         }
     }
 }
@@ -58,6 +62,22 @@ variable "private_subnet_cidrs" {
         "subnet1" = {
             cidr_block = "10.2.1.0/24"
             az         = "eu-central-1a"
+        }
+        "db_subnet1" = {
+            cidr_block = "10.2.2.0/24"
+            az         = "eu-central-1a"
+        }
+        "db_subnet2" = {
+            cidr_block = "10.2.3.0/24"
+            az         = "eu-central-1b"
+        }
+        "lambda_subnet1" = {
+            cidr_block = "10.2.4.0/24"
+            az         = "eu-central-1a"
+        }
+        "lambda_subnet2" = {
+            cidr_block = "10.2.5.0/24"
+            az         = "eu-central-1b"
         }
     }
 }

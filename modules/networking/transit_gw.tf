@@ -24,11 +24,9 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "public" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "private" {
-    for_each = var.private_subnet_cidrs
-
     transit_gateway_id = aws_ec2_transit_gateway.main.id
     vpc_id             = aws_vpc.private.id
-    subnet_ids         = [aws_subnet.private[each.key].id]
+    subnet_ids         = [aws_subnet.private["db_subnet1"].id, aws_subnet.private["db_subnet2"].id]
 
     tags = merge(var.tags, {
         Name = "${var.env}-transit-gateway-vpc-attachment-private"
@@ -36,7 +34,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "private" {
 }
 
 resource "aws_route" "tgw_public_to_private" {
-    route_table_id = aws_route_tables.public.id
+    route_table_id = aws_route_table.public.id
     destination_cidr_block = var.private_vpc_cidr
     transit_gateway_id = aws_ec2_transit_gateway.main.id
     depends_on = [
@@ -46,7 +44,7 @@ resource "aws_route" "tgw_public_to_private" {
 }
 
 resource "aws_route" "tgw_private_to_public" {
-    route_table_id = aws_route_tables.private.id
+    route_table_id = aws_route_table.private.id
     destination_cidr_block = var.public_vpc_cidr
     transit_gateway_id = aws_ec2_transit_gateway.main.id
     depends_on = [

@@ -22,3 +22,12 @@ resource "aws_subnet" "private" {
         Name = "${var.env}-private-subnet-${each.value.az}"
     })
 }
+
+resource "aws_db_subnet_group" "aurora_db_subnet_group" {
+    name = "${var.env}-aurora-db-subnet-group"
+    subnet_ids = [aws_subnet.private["db_subnet1"].id, aws_subnet.private["db_subnet2"].id]
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-aurora-db-subnet-group"
+    })
+}

@@ -21,7 +21,7 @@ jobs:
         strategy:
             max-parallel: 1
             matrix:
-                module: [certificates, monitoring, compute, storage, networking, security]
+                module: [monitoring, compute, storage, networking, certificates, security]
 
         defaults:
             run:

@@ -5,7 +5,7 @@ on:
         branches:
             - main
         paths:
-            - "../env/dev/**"
+            - "../../env/dev/**"
 
 permissions:
     id-token: write
@@ -15,6 +15,7 @@ permissions:
 env:
     AWS_REGION: "eu-central-1"
     STATE_BUCKET: "my-terraform-state-bucket"
+    ENV_NAME: dev
 
 jobs:
     terraform:
@@ -23,7 +24,7 @@ jobs:
         strategy:
             max-parallel: 1
             matrix:
-                module: [security, networking, storage, compute, monitoring, certificates]
+                module: [security, certificates, networking, storage, compute, monitoring]
 
         defaults:
             run:
@@ -42,6 +43,29 @@ jobs:
             - name: Terraform setup
               uses: hashicorp/setup-terraform@v3
 
+            - name: Login to Amazon ECR
+              if: matrix.module == 'monitoring'
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Build and Push Monitoring Images
+              if: matrix.module == 'monitoring'
+              env:
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              # The paths are updated to point to your new storage directory
+              run: |
+                echo "Building and pushing Grafana..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-grafana:latest ${{ github.workspace }}/env/dev/storage/grafana/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-grafana:latest
+
+                echo "Building and pushing Prometheus..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest ${{ github.workspace }}/env/dev/storage/prometheus/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest
+
+                echo "Building and pushing Loki..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest ${{ github.workspace }}/env/dev/storage/loki/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest
+
             - name: Terraform Init
               run: |
                 STATE_KEY="env/dev/${{ matrix.module }}/terraform.tfstate"
@@ -49,7 +73,8 @@ jobs:
                   -backend-config="bucket=${{ env.STATE_BUCKET }}" \
                   -backend-config="key=$STATE_KEY" \
                   -backend-config="region=${{ env.AWS_REGION }}" \
-                  -backend-config="use_lockfile=true"
+                  -backend-config="use_lockfile=true" \
+                  -var-file=../../global/variables.tfvars
                 
             - name: Terraform Validate
               run: terraform validate
