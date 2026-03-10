@@ -33,7 +33,7 @@ data "terraform_remote_state" "networking" {
 
 # Call the monitoring module using networking outputs
 module "monitoring" {
-    source = "../../modules/monitoring"
+    source = "../../../modules/monitoring"
 
     region             = var.region
     env                = var.env

@@ -21,15 +21,10 @@ data "aws_caller_identity" "current" {}
 
 # Call the networking module
 module "networking" {
-    source = "../../modules/networking"
+    source = "../../../modules/networking"
 
-    region               = var.region
-    env                  = var.env
-    tags                 = var.tags
-    email                = var.email
-    public_vpc_cidr      = var.public_vpc_cidr
-    private_vpc_cidr     = var.private_vpc_cidr
-    public_subnet_cidrs  = var.public_subnet_cidrs
-    private_subnet_cidrs = var.private_subnet_cidrs
-    vpn_cidr_block       = var.vpn_cidr_block
+    region = var.region
+    env    = var.env
+    tags   = var.tags
+    email  = var.email
 }

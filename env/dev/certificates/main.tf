@@ -21,7 +21,7 @@ data "aws_caller_identity" "current" {}
 
 # Call the certificates module
 module "certificates" {
-    source = "../../modules/certificates"
+    source = "../../../modules/certificates"
 
     region = var.region
     env    = var.env

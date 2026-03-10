@@ -37,7 +37,7 @@ data "terraform_remote_state" "networking" {
 
 # Call the storage module using networking outputs
 module "storage" {
-    source = "../../modules/storage"
+    source = "../../../modules/storage"
 
     region                  = var.region
     env                     = var.env
@@ -46,6 +46,7 @@ module "storage" {
     private_vpc_id          = data.terraform_remote_state.networking.outputs.private_vpc_id
     private_subnet_ids      = data.terraform_remote_state.networking.outputs.private_subnet_ids
     subnet_group_name       = data.terraform_remote_state.networking.outputs.db_subnet_group_name
+    db_cluster_endpoint     = data.terraform_remote_state.storage.outputs.rds_cluster_endpoint
     lambda_sg_id            = var.lambda_sg_id  # From root or pre-created
     aurora_cluster_endpoint = var.aurora_cluster_endpoint
     aurora_instances        = var.aurora_instances

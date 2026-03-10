@@ -21,7 +21,7 @@ data "aws_caller_identity" "current" {}
 
 # Call the security module
 module "security" {
-    source = "../../modules/security"
+    source = "../../../modules/security"
 
     region = var.region
     env    = var.env

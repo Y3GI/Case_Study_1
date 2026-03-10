@@ -53,7 +53,7 @@ data "terraform_remote_state" "storage" {
 
 # Call the compute module using networking and storage outputs
 module "compute" {
-    source = "../../modules/compute"
+    source = "../../../modules/compute"
 
     region                    = var.region
     env                       = var.env
