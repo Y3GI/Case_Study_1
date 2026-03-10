@@ -50,4 +50,4 @@ jobs:
                   -backend-config="use_lockfile=true"
 
             - name: Terraform Destroy
-              run: terraform destroy -auto-approve -var-file=../../global/variables.tfvars
+              run: terraform destroy -auto-approve -var-file=${{ github.workspace }}/global/variables.tfvars

@@ -71,14 +71,13 @@ jobs:
                   -backend-config="bucket=${{ env.STATE_BUCKET }}" \
                   -backend-config="key=$STATE_KEY" \
                   -backend-config="region=${{ env.AWS_REGION }}" \
-                  -backend-config="use_lockfile=true" \
-                  -var-file=../../global/variables.tfvars
+                  -backend-config="use_lockfile=true"
                 
             - name: Terraform Validate
               run: terraform validate
 
             - name: Terraform Plan
-              run: terraform plan -out=tfplan -var-file=../../global/variables.tfvars
+              run: terraform plan -out=tfplan -var-file=${{ github.workspace }}/global/variables.tfvars
 
             - name: Terraform Apply
               run: terraform apply -auto-approve tfplan
