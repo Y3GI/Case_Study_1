@@ -14,7 +14,7 @@ resource "aws_rds_cluster" "aurora_rds" {
 resource "aws_rds_cluster_instance" "cluster_instance" {
     for_each = var.aurora_instances
 
-    identifier = "${var.env}-aurora-instance-1"
+    identifier = "${var.env}-aurora-instance-${each.key}"
     cluster_identifier = aws_rds_cluster.aurora_rds.id
     instance_class = each.value.instance_class
     engine = aws_rds_cluster.aurora_rds.engine

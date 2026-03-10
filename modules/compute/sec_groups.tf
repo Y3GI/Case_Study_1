@@ -9,6 +9,7 @@ resource "aws_security_group" "lambda_sg" {
         to_port = 3306
         protocol = "tcp"
         security_groups = [var.rds_proxy_sg_id]
+        description = "Allow outbound to RDS Proxy"
     }
 }
 

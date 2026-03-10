@@ -52,7 +52,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
     service_name = "com.amazonaws.${var.region}.ecr.dkr"
     vpc_endpoint_type = "Interface"
     subnet_ids = [aws_subnet.private[each.key].id]
-    security_group_ids = [aws_security_group.monitoring_endpoint_sg]
+    security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
 
@@ -63,7 +63,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
     service_name = "com.amazonaws.${var.region}.logs"
     vpc_endpoint_type = "Interface"
     subnet_ids = [aws_subnet.private[each.key].id]
-    security_group_ids = [aws_security_group.monitoring_endpoint_sg]
+    security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
 

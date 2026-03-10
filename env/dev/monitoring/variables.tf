@@ -18,3 +18,16 @@ variable "email" {
     description = "Email address to send notifications to"
     type        = string
 }
+
+# Monitoring-specific variables
+variable "vpn_sg_id" {
+    description = "VPN access security group ID (from root or pre-created)"
+    type        = string
+    default     = ""  # Can be provided or left empty if using root SG
+}
+
+variable "budget_limit" {
+    description = "Monthly budget limit in USD"
+    type        = number
+    default     = 350
+}

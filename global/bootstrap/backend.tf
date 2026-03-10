@@ -19,7 +19,7 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
     bucket = aws_s3_bucket.terraform_state.id
 
     versioning_configuration {
-        status = "enabled"
+        status = "Enabled"
     }
 }
 
@@ -53,27 +53,36 @@ resource "aws_s3_bucket_policy" "terraform_state" {
             {
                 "Sid": "ListBucket",
                 "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+                },
                 "Action": "s3:ListBucket",
-                "Resource": "arn:aws:s3:::my-terraform-state-bucket"
+                "Resource": "arn:aws:s3:::${aws_s3_bucket.terraform_state.id}"
             },
             {
                 "Sid": "StateOperations",
                 "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+                },
                 "Action": [
                     "s3:GetObject",
                     "s3:PutObject"
                 ],
-                "Resource": "arn:aws:s3:::my-terraform-state-bucket/*"
+                "Resource": "arn:aws:s3:::${aws_s3_bucket.terraform_state.id}/*"
             },
             {
                 "Sid": "LockOperations",
                 "Effect": "Allow",
+                "Principal": {
+                    "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+                },
                 "Action": [
                     "s3:PutObject",
                     "s3:GetObject",
                     "s3:DeleteObject"  
                 ],
-                "Resource": "arn:aws:s3:::my-terraform-state-bucket/*.tflock"
+                "Resource": "arn:aws:s3:::${aws_s3_bucket.terraform_state.id}/*.tflock"
             }
         ]
     })

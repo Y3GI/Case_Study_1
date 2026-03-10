@@ -69,7 +69,7 @@ resource "aws_ecs_service" "monitoring_ecs" {
     desired_count = 1
 
     network_configuration {
-        subnets = [var.private_subnet_ids.id]
+        subnets = var.private_subnet_ids
         security_groups = [aws_security_group.monitoring_stack_sg.id]
         assign_public_ip = false
     }

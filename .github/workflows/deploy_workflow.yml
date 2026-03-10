@@ -80,7 +80,7 @@ jobs:
               run: terraform validate
 
             - name: Terraform Plan
-              run: terraform plan -out=tfplan
+              run: terraform plan -out=tfplan -var-file=../../global/variables.tfvars
 
             - name: Terraform Apply
               run: terraform apply -auto-approve tfplan

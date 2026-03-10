@@ -1,5 +1,5 @@
-data "tls_certificate" "github"{
-    url = "https:://token.actions.githubusercontent.com"
+data "tls_certificate" "github" {
+    url = "https://token.actions.githubusercontent.com"
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
@@ -33,11 +33,10 @@ data "aws_iam_policy_document" "github_action_trust" {
 
 resource "aws_iam_role" "github_actions" {
     name = "github-actions-terraform-ci"
-    assume_role_policy = data.aws_iam_policy_document.github_actions_trust.json
+    assume_role_policy = data.aws_iam_policy_document.github_action_trust.json
 }
 
-resource "aws_iam_policy_attachment" "github_actions_admin" {
-    name = "github-actions-admin-attachment"
-    roles = aws_iam_role.github_actions.name
+resource "aws_iam_role_policy_attachment" "github_actions_admin" {
+    role = aws_iam_role.github_actions.name
     policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
