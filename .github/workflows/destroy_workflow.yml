@@ -25,7 +25,7 @@ jobs:
 
         defaults:
             run:
-                working-directory: ../env/dev/${{ matrix.module }}
+                working-directory: ${{ github.workspace }}/env/dev/${{ matrix.module }}
 
         steps:
             - name: Checkout Repository
