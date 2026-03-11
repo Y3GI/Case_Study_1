@@ -1,5 +1,6 @@
 resource "aws_security_group" "aurora_db_sg" {
     name = "${var.env}-aurora-sg"
+    vpc_id = var.private_vpc_id
     description = "Security group for Aurora RDS"
 
     ingress {
