@@ -113,5 +113,5 @@ variable "client_cert_arn" {
 variable "vpn_cidr_block" {
     description = "The CIDR block for the VPN clients"
     type        = string
-    default     = "10.100.0.0/24"
+    default     = "10.100.0.0/22"
 }

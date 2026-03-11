@@ -14,7 +14,7 @@ resource "aws_ec2_transit_gateway" "main" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "public" {
     transit_gateway_id = aws_ec2_transit_gateway.main.id
     vpc_id             = aws_vpc.public.id
-    subnet_ids         = [for s in aws_subnet.public : s.id]
+    subnet_ids         = [aws_subnet.public["alb_subnet1"].id, aws_subnet.public["alb_subnet2"].id]
 
     tags = merge(var.tags, {
         Name = "${var.env}-transit-gateway-vpc-attachment-public"
