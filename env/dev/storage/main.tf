@@ -42,11 +42,14 @@ module "storage" {
     env                     = var.env
     tags                    = var.tags
     email                   = var.email
-    lambda_sg_id            = var.lambda_sg_id  # From root or pre-created
+    
+    # We pull these IN because the networking module created them
     private_vpc_id          = data.terraform_remote_state.networking.outputs.private_vpc_id
     private_subnet_ids      = data.terraform_remote_state.networking.outputs.private_subnet_ids
     subnet_group_name       = data.terraform_remote_state.networking.outputs.db_subnet_group_name
-    db_cluster_endpoint     = aws_rds_cluster.aurora_rds.endpoint
-    aurora_cluster_endpoint = var.aurora_cluster_endpoint
+    
+    lambda_sg_id            = var.lambda_sg_id  
     aurora_instances        = var.aurora_instances
+    
+    # Notice: db_cluster_endpoint and aurora_cluster_endpoint are GONE!
 }
