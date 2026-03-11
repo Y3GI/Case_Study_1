@@ -51,8 +51,3 @@ variable "db_cluster_endpoint" {
   description = "db cluster endpoint"
   type        = string
 }
-
-variable "aurora_cluster_endpoint" {
-  description = "aurora cluster endpoint"
-  type        = string
-}
