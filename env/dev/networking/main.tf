@@ -37,7 +37,7 @@ module "networking" {
     env    = var.env
     tags   = var.tags
     email  = var.email
-    server_cert_arn = data.terraform_remote_state.certificates.outputs.server_cert_arn
-    client_cert_arn = data.terraform_remote_state.certificates.outputs.client_cert_arn
+    server_cert_arn = data.terraform_remote_state.certificates.outputs.server_certificate_arn
+    client_cert_arn = data.terraform_remote_state.certificates.outputs.client_certificate_arn
 
 }
