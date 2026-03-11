@@ -88,19 +88,19 @@ output "secretsmanager_endpoint_id" {
   value       = aws_vpc_endpoint.secretsmanager.id
 }
 
-output "ecr_api_endpoint_ids" {
+output "ecr_api_endpoint_id" {
   description = "Map of ECR API VPC endpoint IDs"
-  value       = { for k, v in aws_vpc_endpoint.ecr_api : k => v.id }
+  value       = aws_vpc_endpoint.ecr_api.id
 }
 
-output "ecr_dkr_endpoint_ids" {
+output "ecr_dkr_endpoint_id" {
   description = "Map of ECR Docker VPC endpoint IDs"
-  value       = { for k, v in aws_vpc_endpoint.ecr_dkr : k => v.id }
+  value       = aws_vpc_endpoint.ecr_dkr.id 
 }
 
-output "cloudwatch_logs_endpoint_ids" {
+output "cloudwatch_logs_endpoint_id" {
   description = "Map of CloudWatch Logs VPC endpoint IDs"
-  value       = { for k, v in aws_vpc_endpoint.cloudwatch_logs : k => v.id }
+  value       = aws_vpc_endpoint.cloudwatch_logs.id
 }
 
 output "s3_endpoint_id" {
@@ -108,9 +108,9 @@ output "s3_endpoint_id" {
   value       = aws_vpc_endpoint.s3.id
 }
 
-output "monitoring_endpoint_security_group_ids" {
+output "monitoring_endpoint_security_group_id" {
   description = "Map of monitoring endpoint security group IDs"
-  value       = { for k, v in aws_security_group.monitoring_endpoint_sg : k => v.id }
+  value       = aws_security_group.monitoring_endpoint_sg.id
 }
 
 output "rds_endpoint_security_group_id" {
