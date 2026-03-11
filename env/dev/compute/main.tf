@@ -43,7 +43,7 @@ data "terraform_remote_state" "storage" {
     backend = "s3"
     config = {
         bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
-        key            = "dev/storage/terraform.tfstate"
+        key            = "env/dev/storage/terraform.tfstate"
         region         = var.region
         encrypt        = true
     }

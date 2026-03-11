@@ -28,7 +28,7 @@ data "terraform_remote_state" "networking" {
     backend = "s3"
     config = {
         bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
-        key            = "dev/networking/terraform.tfstate"
+        key            = "env/dev/networking/terraform.tfstate"
         region         = var.region
         encrypt        = true
     }
