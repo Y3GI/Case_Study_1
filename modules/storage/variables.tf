@@ -35,26 +35,12 @@ variable "private_subnet_ids" {
     type        = list(string)
 }
 
-variable "subnet_group_name" {
-    description = "The name of the DB subnet group"
-    type        = string
-}
-
 
 variable "db_cluster_endpoint" {
     description = "The endpoint of the Aurora RDS cluster"
     type        = string
 }
 
-variable "private_vpc_id" {
-    description = "The ID of the private VPC for the Aurora RDS cluster"
-    type        = string
-}
-
-variable "private_subnet_ids" {
-    description = "A list of private subnet IDs for the Aurora RDS Proxy"
-    type        = list(string)
-}
 
 variable "lambda_sg_id" {
     description = "The ID of the security group for Lambda functions to access Aurora RDS"
