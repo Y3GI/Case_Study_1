@@ -34,10 +34,10 @@ variable "aurora_instances" {
     }))
     default = {
         "instance-1" = {
-            instance_class = "db.t4g.small"
+            instance_class = "db.t3.medium"
         }
         "instance-2" = {
-            instance_class = "db.t4g.small"
+            instance_class = "db.t3.medium"
         }
     }
 }

@@ -48,7 +48,7 @@ variable "aurora_instances"{
         instance_class = string
     }))
     default = {
-        "instance_1" = {
+        "instance-1" = {
             instance_class = "db.t3.medium"
         }
     }
