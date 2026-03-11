@@ -46,8 +46,3 @@ variable "aurora_instances" {
         }
     }
 }
-
-variable "db_cluster_endpoint" {
-  description = "db cluster endpoint"
-  type        = string
-}
