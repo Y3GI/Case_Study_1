@@ -35,34 +35,28 @@ resource "aws_vpc_endpoint" "secretsmanager" {
 
 #Monitoring endpoints
 resource "aws_vpc_endpoint" "ecr_api" {
-    for_each = var.private_subnet_cidrs
-
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.ecr.api"
     vpc_endpoint_type = "Interface"
-    subnet_ids = [aws_subnet.private[each.key].id]
+    subnet_ids = [for s in aws_subnet.private : s.id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
-    for_each = var.private_subnet_cidrs
-
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.ecr.dkr"
     vpc_endpoint_type = "Interface"
-    subnet_ids = [aws_subnet.private[each.key].id]
+    subnet_ids = [for s in aws_subnet.private : s.id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
-    for_each = var.private_subnet_cidrs
-
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.logs"
     vpc_endpoint_type = "Interface"
-    subnet_ids = [aws_subnet.private[each.key].id]
+    subnet_ids = [for s in aws_subnet.private : s.id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
