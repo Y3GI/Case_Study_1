@@ -19,7 +19,7 @@ resource "aws_secretsmanager_secret_version" "aurora_db_secret_version" {
         username = "admin"
         password = random_password.aurora_db_password.result
         engine = "mysql"
-        host = var.aurora_cluster_endpoint
+        host = aws_rds_cluster.aurora_rds.endpoint
         port = 3306
         dbClusterIdentifier = aws_rds_cluster.aurora_rds.cluster_identifier
     })

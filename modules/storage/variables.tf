@@ -36,22 +36,12 @@ variable "private_subnet_ids" {
 }
 
 
-variable "db_cluster_endpoint" {
-    description = "The endpoint of the Aurora RDS cluster"
-    type        = string
-}
-
-
 variable "lambda_sg_id" {
     description = "The ID of the security group for Lambda functions to access Aurora RDS"
     type        = string
 }
 
 #Secrets Manager variables
-variable "aurora_cluster_endpoint" {
-    description = "The endpoint of the Aurora RDS cluster to store credentials for"
-    type        = string
-}
 
 variable "aurora_instances"{
     description = "Number of instances for Aurora rds"
