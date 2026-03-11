@@ -48,3 +48,8 @@ variable "aurora_proxy_endpoint" {
     description = "The endpoint of the Aurora RDS cluster to connect to"
     type        = string
 }
+
+variable "alb_cert_arn" {
+    description = "Encription certificate for alb"
+    type        = string
+}

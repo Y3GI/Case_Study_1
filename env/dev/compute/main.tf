@@ -49,6 +49,16 @@ data "terraform_remote_state" "storage" {
     }
 }
 
+data "terraform_remote_state" "certificates" {
+    backend = "s3"
+    config = {
+        bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+        key            = "env/dev/certificates/terraform.tfstate"
+        region         = var.region
+        encrypt        = true
+    }
+}
+
 # Call the compute module using networking and storage outputs
 module "compute" {
     source = "../../../modules/compute"
@@ -67,4 +77,7 @@ module "compute" {
     # Storage linkages (dynamically pulled from remote state!)
     aurora_proxy_endpoint     = data.terraform_remote_state.storage.outputs.rds_proxy_endpoint
     rds_proxy_sg_id           = data.terraform_remote_state.storage.outputs.rds_proxy_security_group_id
+
+    #Certificate for encryption
+    alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_cert_arn 
 }
