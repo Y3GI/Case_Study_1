@@ -32,21 +32,6 @@ variable "aurora_cluster_endpoint" {
     default     = "db.internal"
 }
 
-variable "private_vpc_id" {
-    description = "The ID of the private VPC"
-    type        = string
-}
-
-variable "private_subnet_ids" {
-    description = "List of private subnet IDs for the DB and Proxy"
-    type        = list(string)
-}
-
-variable "subnet_group_name" {
-    description = "The name of the DB subnet group"
-    type        = string
-}
-
 variable "aurora_instances" {
     description = "Aurora RDS instance configuration"
     type = map(object({

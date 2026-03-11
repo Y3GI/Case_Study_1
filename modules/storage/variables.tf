@@ -25,6 +25,22 @@ variable "subnet_group_name" {
     type        = string
 }
 
+variable "private_vpc_id" {
+    description = "The ID of the private VPC"
+    type        = string
+}
+
+variable "private_subnet_ids" {
+    description = "List of private subnet IDs for the DB and Proxy"
+    type        = list(string)
+}
+
+variable "subnet_group_name" {
+    description = "The name of the DB subnet group"
+    type        = string
+}
+
+
 variable "db_cluster_endpoint" {
     description = "The endpoint of the Aurora RDS cluster"
     type        = string
