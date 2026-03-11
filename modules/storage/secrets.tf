@@ -5,8 +5,10 @@ resource "random_password" "aurora_db_password" {
 }
 
 resource "aws_secretsmanager_secret" "aurora_db_secret" {
-    name = "${var.env}-aurora-db-secret"
+    name_prefix = "${var.env}-aurora-db-secret-"
     description = "Secret for Aurora RDS database credentials"
+
+    recovery_window_in_days = 0
 
     tags = merge(var.tags, {
         Name = "${var.env}-aurora-db-secret"
