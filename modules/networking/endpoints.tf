@@ -38,7 +38,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.ecr.api"
     vpc_endpoint_type = "Interface"
-    subnet_ids = values[{for s in aws_subnet.private : s.availability_zone => s.id}]
+    subnet_ids = values({for s in aws_subnet.private : s.availability_zone => s.id})
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
@@ -47,7 +47,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.ecr.dkr"
     vpc_endpoint_type = "Interface"
-    subnet_ids = values[{for s in aws_subnet.private : s.availability_zone => s.id}]
+    subnet_ids = values({for s in aws_subnet.private : s.availability_zone => s.id})
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
@@ -56,7 +56,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
     vpc_id = aws_vpc.private.id
     service_name = "com.amazonaws.${var.region}.logs"
     vpc_endpoint_type = "Interface"
-    subnet_ids = values[{for s in aws_subnet.private : s.availability_zone =>s.id}]
+    subnet_ids = values({for s in aws_subnet.private : s.availability_zone =>s.id})
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
 }
