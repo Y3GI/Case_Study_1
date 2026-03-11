@@ -27,7 +27,6 @@ data "terraform_remote_state" "networking" {
         key            = "dev/networking/terraform.tfstate"
         region         = var.region
         encrypt        = true
-        dynamodb_table = "terraform-locks"
     }
 }
 

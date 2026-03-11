@@ -19,6 +19,16 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
+data "terraform_remote_state" "certificates" {
+    backend = "s3"
+        config = {
+        bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+        key            = "dev/certificates/terraform.tfstate"
+        region         = var.region
+        encrypt        = true
+    }
+}
+
 # Call the networking module
 module "networking" {
     source = "../../../modules/networking"
@@ -27,4 +37,7 @@ module "networking" {
     env    = var.env
     tags   = var.tags
     email  = var.email
+    server_cert_arn = data.terraform_remote_state.certificates.outputs.server_cert_arn
+    client_cert_arn = data.terraform_remote_state.certificates.outputs.client_cert_arn
+
 }
