@@ -20,7 +20,7 @@ resource "aws_security_group" "rds_proxy_sg" {
         from_port = 3306
         to_port = 3306
         protocol = "tcp"
-        security_groups = [var.lambda_sg_id]
+        cidr_blocks = [var.private_vpc_cidr]
     }
 
     egress {

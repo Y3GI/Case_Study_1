@@ -35,9 +35,8 @@ variable "private_subnet_ids" {
     type        = list(string)
 }
 
-
-variable "lambda_sg_id" {
-    description = "The ID of the security group for Lambda functions to access Aurora RDS"
+variable "private_vpc_cidr" {
+    description = "The CIDR block of the private VPC"
     type        = string
 }
 
