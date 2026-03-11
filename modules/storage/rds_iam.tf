@@ -1,9 +1,5 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_kms_alias" "secretsmanager_key" {
-    name = "alias/aws/secretsmanager"
-}
-
 resource "aws_iam_role" "rds_proxy_role" {
     name = "${var.env}-rds-proxy-role"
 
@@ -40,8 +36,7 @@ resource "aws_iam_role_policy" "rds_proxy_secrets_policy" {
                     "kms:Decrypt"
                 ]
                 Effect   = "Allow"
-                # Change the resource line inside your KMS statement to this:
-                resources = [aws_secretsmanager_secret.aurora_db_secret.kms_key_id]
+                Resource = "*"
                 Condition = {
                     StringEquals = {
                         "kms:ViaService" = "secretsmanager.${var.region}.amazonaws.com"
