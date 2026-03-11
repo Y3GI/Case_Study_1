@@ -20,11 +20,6 @@ variable "email" {
 }
 
 # Storage-specific variables
-variable "lambda_sg_id" {
-    description = "Lambda security group ID (from root or pre-created)"
-    type        = string
-    default     = ""  # Can be provided or left empty if using root SG
-}
 
 variable "aurora_cluster_endpoint" {
     description = "Aurora cluster endpoint (placeholder)"

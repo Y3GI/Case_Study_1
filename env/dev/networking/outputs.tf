@@ -4,9 +4,20 @@ output "public_vpc_id" {
     value       = module.networking.public_vpc_id
 }
 
+output "public_vpc_cidr" {
+    description = "Public VPC CIDR"
+    value       = module.networking.public_vpc_cidr
+}
+
+
 output "private_vpc_id" {
     description = "Private VPC ID"
     value       = module.networking.private_vpc_id
+}
+
+output "private_vpc_cidr" {
+    description = "Private VPC CIDR"
+    value       = module.networking.private_vpc_cidr
 }
 
 output "public_subnet_ids" {
