@@ -49,3 +49,8 @@ output "vpn_access_security_group_id" {
     description = "VPN access security group ID"
     value       = module.networking.vpn_access_security_group_id
 }
+
+output "vpn_sg_id" {
+    description = "VPN security group ID"
+    value       = module.networking.vpn_access_security_group_id
+}

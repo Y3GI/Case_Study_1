@@ -41,6 +41,7 @@ module "monitoring" {
     private_vpc_id     = data.terraform_remote_state.networking.outputs.private_vpc_id
     private_subnet_ids = data.terraform_remote_state.networking.outputs.private_subnet_ids
     private_vpc_cidr   = data.terraform_remote_state.networking.outputs.private_vpc_cidr
-    vpn_sg_id          = var.vpn_sg_id  # From root or pre-created
+    vpn_sg_id          = data.terraform_remote_state.networking.outputs.vpn_sg_id
+
     limit_amount       = var.budget_limit
 }
