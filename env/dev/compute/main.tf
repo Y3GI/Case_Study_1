@@ -79,5 +79,5 @@ module "compute" {
     rds_proxy_sg_id           = data.terraform_remote_state.storage.outputs.rds_proxy_security_group_id
 
     #Certificate for encryption
-    alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_cert_arn 
+    alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_certificate_arn 
 }
