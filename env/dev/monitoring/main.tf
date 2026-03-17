@@ -61,6 +61,7 @@ module "monitoring" {
     private_vpc_cidr   = data.terraform_remote_state.networking.outputs.private_vpc_cidr
     vpn_sg_id          = data.terraform_remote_state.networking.outputs.vpn_sg_id
     db_proxy_endpoint  = data.terraform_remote_state.storage.outputs.rds_proxy_endpoint
+    rds_proxy_sg_id    = data.terraform_remote_state.storage.outputs.rds_proxy_security_group_id
 
     db_username = local.db_creds.username
     db_password = local.db_creds.password

@@ -67,3 +67,8 @@ variable "db_password" {
     description = "db password"
     type = string
 }
+
+variable "rds_proxy_sg_id" {
+    description = "RDS proxy security group"
+    type = string
+}

@@ -38,3 +38,12 @@ resource "aws_security_group" "monitoring_stack_sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
+
+resource "aws_security_group_rule" "monitoring_to_rds_proxy" {
+    type                     = "ingress"
+    from_port                = 3306
+    to_port                  = 3306
+    protocol                 = "tcp"
+    security_group_id        = var.rds_proxy_sg_id 
+    source_security_group_id = aws_security_group.monitoring_stack_sg.id
+}

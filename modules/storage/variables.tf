@@ -40,6 +40,11 @@ variable "private_vpc_cidr" {
     type        = string
 }
 
+variable "monitoring_stack_sg_id"{
+    description = "The ID of the monitoring sg"
+    type = string
+}
+
 #Secrets Manager variables
 
 variable "aurora_instances"{
