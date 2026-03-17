@@ -64,6 +64,15 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
     private_dns_enabled = true
 }
 
+resource "aws_vpc_endpoint" "cloudwatch_metrics" {
+    vpc_id = aws_vpc.private.id
+    service_name = "com.amazonaws.${var.region}.monitoring"
+    vpc_endpoint_type = "Interface"
+    subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
+    security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
+    private_dns_enabled = true
+}
+
 resource "aws_vpc_endpoint" "s3"{
     vpc_id = aws_vpc.private.id
     service_name =  "com.amazonaws.${var.region}.s3"
