@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
         },
         {
             name = "mysqld-exporter"
-            image = "prom/mysqld-exporter:latest"
+            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-mysql-exporter:latest"
             essential = true
             portMappings = [{containerPort = 9104, hostPort = 9104}]
             # We pass the credentials directly via environment variables so the container can log in
