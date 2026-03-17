@@ -63,6 +63,17 @@ resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
                     "tag:GetResources"
                 ]
                 Resource = "*"
+            },
+            {
+                # 3. THE FIX: Let Grafana and YACE read CloudWatch Metrics!
+                Effect = "Allow"
+                Action = [
+                    "cloudwatch:ListMetrics",
+                    "cloudwatch:GetMetricData",
+                    "cloudwatch:GetMetricStatistics",
+                    "cloudwatch:DescribeAlarms"
+                ]
+                Resource = "*"
             }
         ]
     })
