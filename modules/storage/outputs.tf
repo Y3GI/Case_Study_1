@@ -93,16 +93,6 @@ output "ecr_prometheus_repository_arn" {
   value       = aws_ecr_repository.prometheus.arn
 }
 
-output "ecr_yace_repository_url" {
-  description = "The URL of the yace ECR repository"
-  value       = aws_ecr_repository.yace.repository_url
-}
-
-output "ecr_yace_repository_arn" {
-  description = "The ARN of the yace ECR repository"
-  value       = aws_ecr_repository.yace.arn
-}
-
 output "ecr_mysql_exporter_repository_url" {
   description = "The URL of the matrix exporter ECR repository"
   value       = aws_ecr_repository.mysql_exporter.repository_url
