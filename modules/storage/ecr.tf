@@ -17,7 +17,7 @@ resource "aws_ecr_repository" "yace" {
 }
 
 resource "aws_ecr_repository" "mysql_exporter" {
-    name = "${var.env}-aurora-matrix-exporter"
+    name = "${var.env}-mysql-exporter"
     image_tag_mutability = "MUTABLE"
     force_delete = true
 }
