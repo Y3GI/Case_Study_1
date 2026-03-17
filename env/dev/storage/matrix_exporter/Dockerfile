@@ -1,3 +1,3 @@
-FROM prom/prom/mysqld-exporter:latest
+FROM prom/mysqld-exporter:latest
 
 EXPOSE 9104
