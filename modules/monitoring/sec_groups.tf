@@ -37,6 +37,10 @@ resource "aws_security_group" "monitoring_stack_sg" {
         protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-sg"
+    })
 }
 
 resource "aws_security_group_rule" "monitoring_to_rds_proxy" {

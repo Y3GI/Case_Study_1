@@ -1,10 +1,18 @@
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-cluster"
+    })
 }
 
 resource "aws_cloudwatch_log_group" "monitoring_logs" {
     name = "/ecs/${var.env}-monitoring"
     retention_in_days = 7
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-logs"
+    })
 }
 
 resource "aws_ecs_task_definition" "monitoring_stack" {
@@ -84,6 +92,10 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             }
         }
     ])
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-stack"
+    })
 }
 
 resource "aws_ecs_service" "monitoring_ecs" {
@@ -98,4 +110,8 @@ resource "aws_ecs_service" "monitoring_ecs" {
         security_groups = [aws_security_group.monitoring_stack_sg.id]
         assign_public_ip = false
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-ecs"
+    })
 }

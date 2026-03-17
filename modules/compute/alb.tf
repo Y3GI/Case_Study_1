@@ -4,11 +4,19 @@ resource "aws_lb" "alb" {
     load_balancer_type = "application"
     security_groups = [aws_security_group.alb_sg.id]
     subnets = var.public_alb_subnet_ids
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-private-vpc"
+    })
 }
 
 resource "aws_lb_target_group" "lambda_tg" {
     name = "${var.env}-lambda-tg"
     target_type = "lambda"
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-private-vpc"
+    })
 }
 
 resource "aws_lb_listener" "alb_listener" {
@@ -23,6 +31,10 @@ resource "aws_lb_listener" "alb_listener" {
         type = "forward"
         target_group_arn = aws_lb_target_group.lambda_tg.arn
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-alb-listener"
+    })
 }
 
 resource "aws_lb_target_group_attachment" "lambda_attachment" {

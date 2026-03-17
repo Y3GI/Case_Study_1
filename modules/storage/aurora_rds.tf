@@ -9,6 +9,10 @@ resource "aws_rds_cluster" "aurora_rds" {
     db_subnet_group_name = var.subnet_group_name
     storage_encrypted = false
     skip_final_snapshot = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-aurora-cluster"
+    })
 }
 
 resource "aws_rds_cluster_instance" "cluster_instance" {
@@ -20,6 +24,10 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
     engine = aws_rds_cluster.aurora_rds.engine
     engine_version = aws_rds_cluster.aurora_rds.engine_version
     publicly_accessible = false
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-aurora-instance-${each.key}"
+    })
 }
 
 resource "aws_db_proxy" "rds_proxy" {
@@ -40,6 +48,10 @@ resource "aws_db_proxy" "rds_proxy" {
         iam_auth = "DISABLED"
         secret_arn = aws_secretsmanager_secret.aurora_db_secret.arn
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-rds-proxy"
+    })
 }
 
 resource "aws_db_proxy_default_target_group" "proxy_target_group" {

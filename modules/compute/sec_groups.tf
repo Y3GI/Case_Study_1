@@ -11,6 +11,10 @@ resource "aws_security_group" "lambda_sg" {
         security_groups = [var.rds_proxy_sg_id]
         description = "Allow outbound to RDS Proxy"
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-private-vpc"
+    })
 }
 
 #ALB security groups
@@ -39,4 +43,8 @@ resource "aws_security_group" "alb_sg" {
         protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-alb-sg"
+    })
 }

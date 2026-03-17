@@ -34,6 +34,10 @@ resource "aws_vpc_endpoint" "secretsmanager" {
     subnet_ids = [aws_subnet.private["db_subnet1"].id, aws_subnet.private["db_subnet2"].id]
     security_group_ids = [aws_security_group.rds_endpoint.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-secretmanager-endpoint"
+    })
 }
 
 #Monitoring endpoints
@@ -44,6 +48,10 @@ resource "aws_vpc_endpoint" "ecr_api" {
     subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-ecr-api-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
@@ -53,6 +61,10 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
     subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-ecr-dkr-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
@@ -62,6 +74,10 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
     subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-cloudwatch-logs-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "cloudwatch_metrics" {
@@ -71,6 +87,10 @@ resource "aws_vpc_endpoint" "cloudwatch_metrics" {
     subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-cloudwatch-metrics-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "sts" {
@@ -80,6 +100,10 @@ resource "aws_vpc_endpoint" "sts" {
     subnet_ids          = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids  = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-sts-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "tagging" {
@@ -89,6 +113,10 @@ resource "aws_vpc_endpoint" "tagging" {
     subnet_ids          = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids  = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-tagging-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "oam" {
@@ -98,6 +126,10 @@ resource "aws_vpc_endpoint" "oam" {
     subnet_ids          = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
     security_group_ids  = [aws_security_group.monitoring_endpoint_sg.id]
     private_dns_enabled = true
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-oam-endpoint"
+    })
 }
 
 resource "aws_vpc_endpoint" "s3"{
@@ -105,4 +137,8 @@ resource "aws_vpc_endpoint" "s3"{
     service_name =  "com.amazonaws.${var.region}.s3"
     vpc_endpoint_type = "Gateway"
     route_table_ids = [aws_route_table.private.id]
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-s3-endpoint"
+    })
 }

@@ -11,6 +11,10 @@ resource "aws_iam_role" "lambda_exec_role" {
             }
         }]
     })
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-lambda-exec-role"
+    })
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {

@@ -10,6 +10,10 @@ resource "aws_security_group" "vpn_access" {
         protocol    = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-vpn-access-sg"
+    })
 }
 
 resource "aws_security_group" "monitoring_endpoint_sg" {
@@ -30,6 +34,10 @@ resource "aws_security_group" "monitoring_endpoint_sg" {
         protocol    = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    
+    tags = merge(var.tags, {
+        Name = "${var.env}-monitoring-endpoint-sg"
+    })
 }
 
 resource "aws_security_group" "rds_endpoint" {
@@ -49,4 +57,8 @@ resource "aws_security_group" "rds_endpoint" {
         protocol    = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-rds-endpoint-sg"
+    })
 }

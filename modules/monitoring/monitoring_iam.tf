@@ -11,6 +11,10 @@ resource "aws_iam_role" "ecs_execution_role" {
             Principal = { Service = "ecs-tasks.amazonaws.com" }
         }]
     })
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-current-account"
+    })
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
@@ -27,6 +31,10 @@ resource "aws_iam_role" "ecs_task_role" {
             Effect = "Allow"
             Principal = { Service = "ecs-tasks.amazonaws.com" }
         }]
+    })
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-ecs-task-role"
     })
 }
 

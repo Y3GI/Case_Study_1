@@ -13,6 +13,10 @@ resource "aws_iam_role" "rds_proxy_role" {
             }
         }]
     })
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-rds-proxy-role"
+    })
 }
 
 resource "aws_iam_role_policy" "rds_proxy_secrets_policy" {

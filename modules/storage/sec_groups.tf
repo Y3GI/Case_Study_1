@@ -10,6 +10,10 @@ resource "aws_security_group" "aurora_db_sg" {
         protocol = "tcp"
         security_groups = [aws_security_group.rds_proxy_sg.id]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-aurora-sg"
+    })
 }
 
 resource "aws_security_group" "rds_proxy_sg" {
@@ -31,4 +35,8 @@ resource "aws_security_group" "rds_proxy_sg" {
         cidr_blocks = ["0.0.0.0/0"]
         ipv6_cidr_blocks = ["::/0"]
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-rds-proxy-sg"
+    })
 }

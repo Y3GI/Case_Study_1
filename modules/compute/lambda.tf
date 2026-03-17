@@ -17,6 +17,10 @@ resource "aws_lambda_function" "web_app" {
             DB_HOST = var.aurora_proxy_endpoint
         }
     }
+
+    tags = merge(var.tags, {
+        Name = "${var.env}-lambda-web-app"
+    })
 }
 
 resource "aws_lambda_permission" "allow_alb" {

@@ -38,5 +38,7 @@ resource "aws_budgets_budget" "monthly"{
         subscriber_email_addresses = [var.email]
     }
 
-    tags = var.tags
+    tags = merge(var.tags, {
+        Name = "${var.env}-budget"
+    })
 }
