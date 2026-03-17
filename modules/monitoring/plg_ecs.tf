@@ -23,6 +23,9 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-grafana:latest"
             essential = true
             portMappings = [{containerPort = 3000, hostPort = 3000}]
+            environment = [{ 
+                name = "GF_ANALYTICS_CHECK_FOR_UPDATES", value = "false" 
+            }]
             logConfiguration = {
                 logDriver = "awslogs"
                 options = {
