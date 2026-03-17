@@ -32,12 +32,3 @@ resource "aws_security_group" "rds_proxy_sg" {
         ipv6_cidr_blocks = ["::/0"]
     }
 }
-
-resource "aws_security_group_rule" "allow_monitoring_to_proxy" {
-    type                     = "ingress"
-    from_port                = 3306
-    to_port                  = 3306
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.rds_proxy_sg.id
-    source_security_group_id = var.monitoring_stack_sg_id # The SG of your ECS task!
-}
