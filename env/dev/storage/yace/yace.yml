@@ -1,10 +1,12 @@
 apiVersion: v1alpha1
-discovery:
-  jobs:
-  - type: AWS/Lambda
+static:
+  - namespace: AWS/Lambda
+    name: dev-lambda-metrics # Just a label for Grafana
     regions:
-      - eu-central-1 # Change this if you use a different region!
-    roles: []
+      - eu-central-1
+    dimensions:
+      - name: FunctionName
+        value: dev-lambda-web-app
     metrics:
       - name: Invocations
         statistics: [Sum]
