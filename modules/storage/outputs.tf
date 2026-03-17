@@ -93,14 +93,24 @@ output "ecr_prometheus_repository_arn" {
   value       = aws_ecr_repository.prometheus.arn
 }
 
-output "ecr_loki_repository_url" {
-  description = "The URL of the Loki ECR repository"
-  value       = aws_ecr_repository.loki.repository_url
+output "ecr_yace_repository_url" {
+  description = "The URL of the yace ECR repository"
+  value       = aws_ecr_repository.yace.repository_url
 }
 
-output "ecr_loki_repository_arn" {
-  description = "The ARN of the Loki ECR repository"
-  value       = aws_ecr_repository.loki.arn
+output "ecr_yace_repository_arn" {
+  description = "The ARN of the yace ECR repository"
+  value       = aws_ecr_repository.yace.arn
+}
+
+output "ecr_matix_exporter_repository_url" {
+  description = "The URL of the matrix exporter ECR repository"
+  value       = aws_ecr_repository.aurora_matrix_exporter.repository_url
+}
+
+output "ecr_matix_exporter_repository_arn" {
+  description = "The ARN of the matrix exporter ECR repository"
+  value       = aws_ecr_repository.aurora_matrix_exporter.arn
 }
 
 output "aurora_db_security_group_id" {
