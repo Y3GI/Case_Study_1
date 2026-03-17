@@ -51,14 +51,20 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-mysql-exporter:latest"
             essential = true
             portMappings = [{containerPort = 9104, hostPort = 9104}]
-            # We pass the credentials directly via environment variables so the container can log in
-            environment = [
-                {
-                    name = "DATA_SOURCE_NAME"
-                    value = "${var.db_username}:${var.db_password}@tcp(${var.db_proxy_endpoint}:3306)/"
-                }
+            
+            entrypoint = ["sh", "-c"]
+            
+            command = [
+                "echo '[client]' > /tmp/.my.cnf && echo 'user=${var.db_username}' >> /tmp/.my.cnf && echo 'password=${var.db_password}' >> /tmp/.my.cnf && echo 'host=${var.db_proxy_endpoint}' >> /tmp/.my.cnf && echo 'port=3306' >> /tmp/.my.cnf && exec /bin/mysqld_exporter --config.my-cnf=/tmp/.my.cnf"
             ]
-            logConfiguration = { logDriver = "awslogs", options = { "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name, "awslogs-region" = var.region, "awslogs-stream-prefix" = "mysql-exporter" } }
+            logConfiguration = { 
+                logDriver = "awslogs", 
+                options = { 
+                    "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name, 
+                    "awslogs-region" = var.region, 
+                    "awslogs-stream-prefix" = "mysql-exporter" 
+                } 
+            }
         },
         {
             name = "yace-exporter"
