@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "aurora_rds" {
     cluster_identifier = "${var.env}-aurora-cluster"
     engine = "aurora-mysql"
-    engine_version = "8.0.mysql_aurora.3.04.1"
+    engine_version = "8.0.mysql_aurora.3.10.3"
     database_name = "aurora_db"
     master_username = "admin"
     master_password = random_password.aurora_db_password.result
