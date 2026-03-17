@@ -62,12 +62,12 @@ jobs:
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest
 
                 echo "Building and pushing yace..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-yace:latest ${{ github.workspace }}/env/dev/storage/yace/
-                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-yace:latest
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-yet-another-cloudwatch-exporter:latest ${{ github.workspace }}/env/dev/storage/yace/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-yet-another-cloudwatch-exporter:latest
 
                 echo "Building and pushing mysql exporter..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysqld-exporter:latest ${{ github.workspace }}/env/dev/storage/matrix_exporter/
-                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-mysqld-exporter:latest
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest ${{ github.workspace }}/env/dev/storage/matrix_exporter/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest
 
             - name: Terraform Init
               run: |
