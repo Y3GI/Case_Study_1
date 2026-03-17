@@ -10,8 +10,14 @@ resource "aws_ecr_repository" "prometheus" {
     force_delete = true
 }
 
-resource "aws_ecr_repository" "loki" {
-    name = "${var.env}-loki"
+resource "aws_ecr_repository" "yace" {
+    name = "${var.env}-yace"
+    image_tag_mutability = "MUTABLE"
+    force_delete = true
+}
+
+resource "aws_ecr_repository" "aurora_matrix_exporter" {
+    name = "${var.env}-aurora-matrix-exporter"
     image_tag_mutability = "MUTABLE"
     force_delete = true
 }

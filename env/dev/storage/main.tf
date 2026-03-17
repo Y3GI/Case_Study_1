@@ -50,6 +50,4 @@ module "storage" {
     private_vpc_cidr        = data.terraform_remote_state.networking.outputs.private_vpc_cidr
     
     aurora_instances        = var.aurora_instances
-    
-    # Notice: db_cluster_endpoint and aurora_cluster_endpoint are GONE!
 }

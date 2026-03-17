@@ -1,3 +1,11 @@
+data "aws_secretsmanager_secret_version" "db_secret"{
+    secret_id = var.aurora_db_secret_arn
+}
+
+locals {
+    db_creds = jsondecode(data.aws_secretsmanager_secret_version.db_secret.secret_string)
+}
+
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
 }
@@ -13,7 +21,9 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
     requires_compatibilities = ["FARGATE"]
     cpu = 1024
     memory = 2048
+
     execution_role_arn = aws_iam_role.ecs_execution_role.arn
+    task_role_arn = aws_iam_role.ecs_task_role.arn
     
     container_definitions = jsonencode([
         {
@@ -45,17 +55,31 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             }
         },
         {
-            name = "loki"
-            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-loki:latest"
+            name = "mysqld-exporter"
+            image = "prom/mysqld-exporter:latest"
             essential = true
-            portMappings = [{containerPort = 3100, hostPort = 3100}]
-            logConfiguration = {
-                logDriver = "awslogs"
-                options = {
-                    "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name
-                    "awslogs-region" = var.region
-                    "awslogs-stream-prefix" = "loki"
+            portMappings = [{containerPort = 9104, hostPort = 9104}]
+            # We pass the credentials directly via environment variables so the container can log in
+            environment = [
+                {
+                    name = "DATA_SOURCE_NAME"
+                    value = "${locals.db_creds.username}:${locals.db_creds.password}@(${var.db_proxy_endpoint}:3306)/"
                 }
+            ]
+            logConfiguration = { logDriver = "awslogs", options = { "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name, "awslogs-region" = var.region, "awslogs-stream-prefix" = "mysql-exporter" } }
+        },
+        {
+            name = "yace-exporter"
+            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-yace:latest"
+            essential = true
+            portMappings = [{containerPort = 5000, hostPort = 5000}]
+            logConfiguration = { 
+                logDriver = "awslogs", 
+                options = { 
+                    "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name,
+                    "awslogs-region" = var.region,
+                    "awslogs-stream-prefix" = "yace"
+                } 
             }
         }
     ])

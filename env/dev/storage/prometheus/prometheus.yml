@@ -5,6 +5,9 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
-  - job_name: 'loki'
+  - job_name: 'aurora-mysql'
     static_configs:
-      - targets: ['localhost:3100']
+      - targets: ['localhost:9104']
+  - job_name: 'aws-lambda-yace'
+    static_configs:
+      - targets: ['localhost:5000']

@@ -5,7 +5,10 @@ datasources:
     url: http://localhost:9090
     access: proxy
     isDefault: true
-  - name: Loki
-    type: loki
-    url: http://localhost:3100
-    access: proxy
+    editable: true
+  - name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      defaultRegion: eu-central-1
+      authType: default
+    isDefault: true

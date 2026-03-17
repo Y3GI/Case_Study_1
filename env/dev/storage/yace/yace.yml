@@ -1,0 +1,20 @@
+apiVersion: v1alpha1
+discovery:
+  jobs:
+  - type: AWS/Lambda
+    regions:
+      - eu-central-1 # Change this if you use a different region!
+    roles: []
+    metrics:
+      - name: Invocations
+        statistics: [Sum]
+        period: 60
+        length: 300
+      - name: Errors
+        statistics: [Sum]
+        period: 60
+        length: 300
+      - name: Duration
+        statistics: [Average, Maximum]
+        period: 60
+        length: 300
