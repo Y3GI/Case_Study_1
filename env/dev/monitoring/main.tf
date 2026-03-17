@@ -40,6 +40,14 @@ data "terraform_remote_state" "storage" {
     }
 }
 
+data "aws_secretsmanager_secret_version" "db_secret"{
+    secret_id = data.terraform_remote_state.storage.outputs.aurora_db_secret_arn
+}
+
+locals {
+    db_creds = jsondecode(data.aws_secretsmanager_secret_version.db_secret.secret_string)
+}
+
 # Call the monitoring module using networking outputs
 module "monitoring" {
     source = "../../../modules/monitoring"
@@ -53,7 +61,6 @@ module "monitoring" {
     private_vpc_cidr   = data.terraform_remote_state.networking.outputs.private_vpc_cidr
     vpn_sg_id          = data.terraform_remote_state.networking.outputs.vpn_sg_id
     db_proxy_endpoint  = data.terraform_remote_state.storage.outputs.rds_cluster_endpoint
-    aurora_db_secret_arn = data.terraform_remote_state.storage.outputs.aurora_db_secret_arn
 
     limit_amount       = var.budget_limit
 }

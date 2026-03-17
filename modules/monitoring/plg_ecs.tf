@@ -1,11 +1,3 @@
-data "aws_secretsmanager_secret_version" "db_secret"{
-    secret_id = var.aurora_db_secret_arn
-}
-
-locals {
-    db_creds = jsondecode(data.aws_secretsmanager_secret_version.db_secret.secret_string)
-}
-
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
 }

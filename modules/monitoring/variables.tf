@@ -57,8 +57,3 @@ variable "db_proxy_endpoint" {
     description = "db proxy endpoint"
     type = string
 }
-
-variable "aurora_db_secret_arn" {
-    description = "db secret arn"
-    type = string
-}
