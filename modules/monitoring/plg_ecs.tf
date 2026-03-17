@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             environment = [
                 {
                     name = "DATA_SOURCE_NAME"
-                    value = "${locals.db_creds.username}:${locals.db_creds.password}@(${var.db_proxy_endpoint}:3306)/"
+                    value = "${var.db_username}:${var.db_password}@(${var.db_proxy_endpoint}:3306)/"
                 }
             ]
             logConfiguration = { logDriver = "awslogs", options = { "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name, "awslogs-region" = var.region, "awslogs-stream-prefix" = "mysql-exporter" } }

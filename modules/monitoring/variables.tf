@@ -57,3 +57,13 @@ variable "db_proxy_endpoint" {
     description = "db proxy endpoint"
     type = string
 }
+
+variable "db_username" {
+    description = "db username"
+    type = string
+}
+
+variable "db_password" {
+    description = "db password"
+    type = string
+}
