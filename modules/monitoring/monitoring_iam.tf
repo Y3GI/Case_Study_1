@@ -34,3 +34,36 @@ resource "aws_iam_role_policy_attachment" "ecs_task_cloudwatch_policy" {
     role = aws_iam_role.ecs_execution_role.id
     policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
 }
+
+resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
+    name = "${var.env}-grafana-yace-policy"
+    role = aws_iam_role.ecs_task_role.id
+
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                # 1. Let Grafana read and query CloudWatch Logs
+                Effect = "Allow"
+                Action = [
+                    "logs:DescribeLogGroups",
+                    "logs:GetLogEvents",
+                    "logs:GetLogGroupFields",
+                    "logs:StartQuery",
+                    "logs:StopQuery",
+                    "logs:GetQueryResults",
+                    "logs:GetLogRecord"
+                ]
+                Resource = "*"
+            },
+            {
+                # 2. Let YACE discover your Lambda functions via tags
+                Effect = "Allow"
+                Action = [
+                    "tag:GetResources"
+                ]
+                Resource = "*"
+            }
+        ]
+    })
+}
