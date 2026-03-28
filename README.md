@@ -26,7 +26,7 @@ Before the pipeline can run, you must provision the S3 backend for Terraform sta
    cd global
 
 2. Initialize and apply the global infrastructure:
-
+    ```bash
     terraform init
     terraform apply
 
