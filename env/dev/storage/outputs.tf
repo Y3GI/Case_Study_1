@@ -20,7 +20,7 @@ output "rds_cluster_master_username" {
     value       = module.storage.rds_cluster_master_username
 }
 
-output "rds_proxy_master_password" {
+output "rds_cluster_master_password" {
     description = "RDS Proxy password"
     value       = module.storage.rds_cluster_master_password
     sensitive   = true
