@@ -66,15 +66,15 @@ jobs:
 
               run: |
                 echo "Building and pushing Grafana..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-grafana:latest ${{ github.workspace }}/env/dev/storage/grafana/
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-grafana:latest ${{ github.workspace }}/modules/storage/grafana/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-grafana:latest
 
                 echo "Building and pushing Prometheus..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest ${{ github.workspace }}/env/dev/storage/prometheus/
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest ${{ github.workspace }}/modules/storage/prometheus/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest
 
                 echo "Building and pushing mysql exporter..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest ${{ github.workspace }}/env/dev/storage/matrix_exporter/
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest ${{ github.workspace }}/modules/storage/matrix_exporter/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest
 
             - name: Terraform Init

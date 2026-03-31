@@ -88,6 +88,6 @@ resource "local_file" "lambda_template" {
 
 data "archive_file" "lambda_zip" {
     type = "zip"
-    source_file = "${path.module}/lambda_src"
+    source_dir = "${path.module}/lambda_src"
     output_path = "${path.module}/lambda_function_payload.zip"
 }
