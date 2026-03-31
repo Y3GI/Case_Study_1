@@ -2,7 +2,7 @@ resource "aws_lambda_function" "web_app" {
     function_name = "${var.env}-web-app"
     role = aws_iam_role.lambda_exec_role.arn
     handler = "index.handler"
-    runtime = "nodejs20.x"
+    runtime = "nodejs18.x"
 
     filename = data.archive_file.lambda_zip.output_path
     source_code_hash = data.archive_file.lambda_zip.output_base64sha256
@@ -90,4 +90,5 @@ data "archive_file" "lambda_zip" {
     type = "zip"
     source_dir = "${path.module}/lambda_src"
     output_path = "${path.module}/lambda_function_payload.zip"
+    depends_on = [ local_file.lambda_template ]
 }
