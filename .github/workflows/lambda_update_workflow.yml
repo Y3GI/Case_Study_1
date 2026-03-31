@@ -10,6 +10,13 @@ permissions:
     contents: read
     security-events: write
 
+env:
+    AWS_REGION: ${{ vars.AWS_REGION }}
+    STATE_BUCKET: ${{ vars.STATE_BUCKET }}
+    ENV_NAME: ${{ vars.ENV_NAME }}
+
+
 jobs:
     deploy:
+        name: Upload Lambda Function
         runs-on: ubuntu-latest

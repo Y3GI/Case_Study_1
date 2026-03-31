@@ -32,54 +32,62 @@ resource "aws_lambda_permission" "allow_alb" {
 }
 
 resource "local_file" "lambda_template" {
-  filename = "${path.module}/index.mjs"
+  filename = "${path.module}/lambda_src/index.mjs"
   content  = <<-EOF
-    import net from 'net';
+    import mysql from 'mysql2/promise';
 
     export const handler = async (event) => {
-      // We grab the proxy endpoint you passed in via Terraform environment variables
-      const dbHost = process.env.DB_HOST; 
-      const dbPort = 3306;
+      const dbHost = process.env.DB_HOST;
+      const dbUser = process.env.DB_USER;
+      const dbPassword = process.env.DB_PASSWORD;
+      // const dbName = process.env.DB_NAME; // Uncomment if connecting to a specific DB
 
-      return new Promise((resolve) => {
-        const socket = new net.Socket();
-        socket.setTimeout(3000); // 3-second timeout so the Lambda doesn't hang forever
-
-        // Try to connect to the RDS Proxy
-        socket.connect(dbPort, dbHost, () => {
-          socket.destroy(); // Clean up the connection
-          resolve({
-            statusCode: 200,
-            headers: { "Content-Type": "text/html" },
-            body: `<h1>Network Success!</h1><p>The Lambda function successfully reached the RDS Proxy at <b>$${dbHost}:$${dbPort}</b>.</p>`
-          });
+      try {
+        // 1. Attempt to authenticate with the RDS Proxy
+        const connection = await mysql.createConnection({
+          host: dbHost,
+          user: dbUser,
+          password: dbPassword,
+          connectTimeout: 3000 // 3 seconds
         });
 
-        // If the connection fails (e.g., Security Group issue)
-        socket.on('error', (err) => {
-          resolve({
-            statusCode: 500,
-            headers: { "Content-Type": "text/html" },
-            body: `<h1>Connection Failed!</h1><p>Error: $${err.message}</p>`
-          });
-        });
+        // 2. Execute a real SQL query
+        const [rows] = await connection.execute('SELECT 1 + 1 AS solution');
+        await connection.end();
 
-        // If the connection times out (e.g., Subnet routing issue)
-        socket.on('timeout', () => {
-          socket.destroy();
-          resolve({
-            statusCode: 500,
-            headers: { "Content-Type": "text/html" },
-            body: `<h1>Timeout!</h1><p>Could not reach the RDS Proxy within 3 seconds.</p>`
-          });
-        });
-      });
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "text/html" },
+          body: `
+            <div style="font-family: sans-serif; padding: 20px;">
+              <h1 style="color: #4CAF50;">✅ Full Database Connection Successful!</h1>
+              <p>The Lambda function reached the RDS Proxy at <b>$${dbHost}</b>.</p>
+              <p>Authentication was successful.</p>
+              <p><b>Database Query Result (SELECT 1 + 1):</b> $${rows[0].solution}</p>
+            </div>
+          `
+        };
+
+      } catch (err) {
+        // If the password is wrong, or the network times out
+        return {
+          statusCode: 500,
+          headers: { "Content-Type": "text/html" },
+          body: `
+            <div style="font-family: sans-serif; padding: 20px;">
+              <h1 style="color: #F44336;">❌ Connection Failed!</h1>
+              <p><b>Error Code:</b> $${err.code}</p>
+              <p><b>Message:</b> $${err.message}</p>
+            </div>
+          `
+        };
+      }
     };
   EOF
 }
 
 data "archive_file" "lambda_zip" {
     type = "zip"
-    source_file = local_file.lambda_template.filename
+    source_file = "${path.module}/lambda_src"
     output_path = "${path.module}/lambda_function_payload.zip"
 }

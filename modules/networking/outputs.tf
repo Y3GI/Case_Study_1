@@ -43,6 +43,11 @@ output "private_subnet_ids" {
   value       = [for subnet in aws_subnet.private : subnet.id]
 }
 
+output "lambda_subnet_ids" {
+  description = "List of subnet IDs for Lambda"
+  value       = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
+}
+
 output "db_subnet_group_name" {
   description = "The name of the DB subnet group"
   value       = aws_db_subnet_group.aurora_db_subnet_group.name

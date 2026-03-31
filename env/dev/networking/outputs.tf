@@ -30,6 +30,11 @@ output "private_subnet_ids" {
     value       = module.networking.private_subnet_ids
 }
 
+output "lambda_subnet_ids" {
+    description = "Lambda subnet IDs"
+    value       = module.networking.lambda_subnet_ids
+}
+
 output "db_subnet_group_name" {
     description = "Database subnet group name"
     value       = module.networking.db_subnet_group_name

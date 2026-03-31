@@ -72,7 +72,7 @@ module "compute" {
     private_vpc_id            = data.terraform_remote_state.networking.outputs.private_vpc_id
     public_vpc_id             = data.terraform_remote_state.networking.outputs.public_vpc_id
     public_alb_subnet_ids     = data.terraform_remote_state.networking.outputs.public_subnet_ids
-    private_lambda_subnet_ids = data.terraform_remote_state.networking.outputs.private_subnet_ids
+    private_lambda_subnet_ids = data.terraform_remote_state.networking.outputs.lambda_subnet_ids
     
     # Storage linkages (dynamically pulled from remote state!)
     aurora_proxy_endpoint     = data.terraform_remote_state.storage.outputs.rds_proxy_endpoint

@@ -41,6 +41,18 @@ jobs:
             - name: Terraform setup
               uses: hashicorp/setup-terraform@v3
 
+            - name: Setup Node.js
+              if: matrix.module == 'compute'
+              uses: actions/setup-node@v3
+              with:
+                node-version: 18'
+
+            - name: Install Lambda Dependencies
+              if: matrix.module == 'compute'
+              run: |
+                cd module/compute/lambda_src
+                npm install
+
             - name: Login to Amazon ECR
               if: matrix.module == 'monitoring'
               id: login-ecr
