@@ -45,7 +45,7 @@ jobs:
               if: matrix.module == 'compute'
               uses: actions/setup-node@v3
               with:
-                node-version: 18'
+                node-version: '18'
 
             - name: Install Lambda Dependencies
               if: matrix.module == 'compute'
