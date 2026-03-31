@@ -50,7 +50,7 @@ jobs:
             - name: Install Lambda Dependencies
               if: matrix.module == 'compute'
               run: |
-                cd module/compute/lambda_src
+                cd ${{ github.workspace }}/${{ matrix.module }}/lambda_src
                 npm install
 
             - name: Login to Amazon ECR
