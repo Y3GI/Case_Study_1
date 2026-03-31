@@ -76,6 +76,8 @@ module "compute" {
     
     # Storage linkages (dynamically pulled from remote state!)
     aurora_proxy_endpoint     = data.terraform_remote_state.storage.outputs.rds_proxy_endpoint
+    aurora_username           = data.terraform_remote_state.storage.outputs.rds_cluster_master_username
+    aurora_password           = data.terraform_remote_state.storage.outputs.rds_cluster_master_password
     rds_proxy_sg_id           = data.terraform_remote_state.storage.outputs.rds_proxy_security_group_id
 
     #Certificate for encryption

@@ -28,6 +28,13 @@ output "rds_cluster_master_username" {
   value       = aws_rds_cluster.aurora_rds.master_username
 }
 
+output "rds_cluster_master_password" {
+  description = "The password of the RDS Proxy"
+  value       = aws_rds_cluster.aurora_rds.master_password
+  sensitive   = true
+}
+
+
 output "rds_cluster_instances" {
   description = "Map of RDS cluster instance details"
   value       = { for k, v in aws_rds_cluster_instance.cluster_instance : k => v.id }

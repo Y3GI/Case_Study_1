@@ -15,6 +15,8 @@ resource "aws_lambda_function" "web_app" {
     environment {
         variables = {
             DB_HOST = var.aurora_proxy_endpoint
+            DB_USER = var.aurora_username
+            DB_PASSWORD = var.aurora_password
         }
     }
 

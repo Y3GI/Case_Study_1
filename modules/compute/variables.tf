@@ -49,6 +49,16 @@ variable "aurora_proxy_endpoint" {
     type        = string
 }
 
+variable "aurora_username" {
+    description = "The username to connect to the Aurora RDS cluster"
+    type        = string
+}
+
+variable "aurora_password" {
+    description = "The password to connect to the Aurora RDS cluster"
+    type        = string
+}
+
 variable "alb_cert_arn" {
     description = "Encription certificate for alb"
     type        = string

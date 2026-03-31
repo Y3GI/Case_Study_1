@@ -15,6 +15,17 @@ output "rds_proxy_endpoint" {
     value       = module.storage.rds_proxy_endpoint
 }
 
+output "rds_cluster_master_username" {
+    description = "Aurora RDS master username"
+    value       = module.storage.rds_cluster_master_username
+}
+
+output "rds_proxy_master_password" {
+    description = "RDS Proxy password"
+    value       = module.storage.rds_cluster_master_password
+    sensitive   = true
+}
+
 output "aurora_db_secret_arn" {
     description = "Aurora DB secret ARN"
     value       = module.storage.aurora_db_secret_arn
