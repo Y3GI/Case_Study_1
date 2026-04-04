@@ -33,3 +33,8 @@ output "monitoring_security_group_id" {
     description = "Monitoring stack security group ID"
     value       = module.monitoring.monitoring_security_group_id
 }
+
+output "alb_logs_bucket_arn" {
+    description = "ALB logs bucket ARN"
+    value       = module.monitoring.alb_logs_bucket_arn
+}

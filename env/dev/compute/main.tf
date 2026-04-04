@@ -59,6 +59,26 @@ data "terraform_remote_state" "certificates" {
     }
 }
 
+data "terraform_remote_state" "soar" {
+    backend = "s3"
+    config = {
+        bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+        key            = "env/dev/soar/terraform.tfstate"
+        region         = var.region
+        encrypt        = true
+    }
+}
+
+data "terraform_remote_state" "monitoring" {
+    backend = "s3"
+    config = {
+        bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+        key            = "env/dev/monitoring/terraform.tfstate"
+        region         = var.region
+        encrypt        = true
+    }
+}
+
 # Call the compute module using networking and storage outputs
 module "compute" {
     source = "../../../modules/compute"
@@ -81,5 +101,9 @@ module "compute" {
     rds_proxy_sg_id           = data.terraform_remote_state.storage.outputs.rds_proxy_security_group_id
 
     #Certificate for encryption
-    alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_certificate_arn 
+    alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_certificate_arn
+    
+    alb_logs_bucket_arn       = data.terraform_remote_state.monitoring.outputs.alb_logs_bucket_arn
+
+    waf_arn                   = data.terraform_remote_state.soar.outputs.waf_arn
 }

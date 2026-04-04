@@ -5,6 +5,11 @@ resource "aws_lb" "alb" {
     security_groups = [aws_security_group.alb_sg.id]
     subnets = var.public_alb_subnet_ids
 
+    access_logs {
+        bucket = var.alb_logs_bucket_arn
+        enabled = true
+    }
+
     tags = merge(var.tags, {
         Name = "${var.env}-private-vpc"
     })
@@ -41,4 +46,9 @@ resource "aws_lb_target_group_attachment" "lambda_attachment" {
     target_group_arn = aws_lb_target_group.lambda_tg.arn
     target_id = aws_lambda_function.web_app.arn
     depends_on = [aws_lambda_permission.allow_alb]
+}
+
+resource "aws_wafv2_web_acl_association" "alb_waf_link"{
+    resource_arn = aws_lb.alb.arn
+    web_acl_arn = var.waf_arn
 }

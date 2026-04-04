@@ -22,7 +22,7 @@ jobs:
         strategy:
             max-parallel: 1
             matrix:
-                module: [security, certificates, networking, storage, compute, monitoring]
+                module: [security, certificates, networking, storage, monitoring, soar, compute]
 
         defaults:
             run:

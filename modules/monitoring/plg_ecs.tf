@@ -1,3 +1,5 @@
+data "aws_elb_service_account" "main" {}
+
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
 
@@ -99,5 +101,31 @@ resource "aws_ecs_service" "monitoring_ecs" {
 
     tags = merge(var.tags, {
         Name = "${var.env}-monitoring-ecs"
+    })
+}
+
+#ALB monitoring
+
+resource "aws_s3_bucket" "alb_logs"{
+    bucket = "${var.env}-alb-access-logs"
+    force_destroy = true
+
+    tags = var.tags
+}
+
+resource "aws_s3_bucket_policy" "alb_logs_policy" {
+    bucket = aws_s3_bucket.alb_logs.id
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+        {
+            Effect = "Allow"
+            Principal = {
+                AWS = data.aws_elb_service_account.main.arn
+            }
+            Action   = "s3:PutObject"
+            Resource = "${aws_s3_bucket.alb_logs.arn}/AWSLogs/*"
+        }
+        ]
     })
 }

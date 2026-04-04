@@ -1,3 +1,15 @@
+resource "aws_cloudwatch_log_group" "vpn_logs"{
+    name = "/aws/vpn/${var.env}-client-vpn"
+    retention_in_days = 30
+
+    tags = var.tags
+}
+
+resource "aws_cloudwatch_log_stream" "vpn_log_stream" {
+    name = "connection-logs"
+    log_group_name = aws_cloudwatch_log_group.vpn_logs.name
+}
+
 resource "aws_ec2_client_vpn_endpoint" "vpn" {
     description = "${var.env}-VPN-Endpoint"
     server_certificate_arn = var.server_cert_arn
@@ -13,7 +25,9 @@ resource "aws_ec2_client_vpn_endpoint" "vpn" {
     }
 
     connection_log_options {
-        enabled = false 
+        enabled = true
+        cloudwatch_log_group = aws_cloudwatch_log_group.vpn_logs.name
+        cloudwatch_log_stream = aws_cloudwatch_log_stream.vpn_log_stream.name
     }
 
     tags = merge(var.tags, {
@@ -128,4 +142,13 @@ resource "aws_vpc_endpoint" "s3"{
     tags = merge(var.tags, {
         Name = "${var.env}-s3-endpoint"
     })
+}
+
+resource "aws_vpc_endpoint" "sns_endpoint"{
+    vpc_id = aws_vpc.private.id
+    service_name = "com.amazonaws.${var.region}.sns"
+    vpc_endpoint_type = "Interface"
+    subnet_ids = [aws_subnet.private["lambda_subnet1"].id, aws_subnet.private["lambda_subnet2"].id]
+    security_group_ids = [aws_security_group.sns_endpoint_sg.id]
+    private_dns_enabled = true
 }

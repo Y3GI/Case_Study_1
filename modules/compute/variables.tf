@@ -63,3 +63,13 @@ variable "alb_cert_arn" {
     description = "Encription certificate for alb"
     type        = string
 }
+
+variable "alb_logs_bucket_arn" {
+    description = "The arn of the alb logs bucket"
+    type = string
+}
+
+variable "waf_arn" {
+    description = "The arn on the waf"
+    type        = string
+}

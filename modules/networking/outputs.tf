@@ -113,6 +113,11 @@ output "s3_endpoint_id" {
   value       = aws_vpc_endpoint.s3.id
 }
 
+output "sns_endpoint_id" {
+  description = "The ID of the sns VPC endpoint"
+  value       = aws_vpc_endpoint.sns_endpoint.id
+}
+
 output "monitoring_endpoint_security_group_id" {
   description = "Map of monitoring endpoint security group IDs"
   value       = aws_security_group.monitoring_endpoint_sg.id
@@ -121,4 +126,39 @@ output "monitoring_endpoint_security_group_id" {
 output "rds_endpoint_security_group_id" {
   description = "The ID of the RDS endpoint security group"
   value       = aws_security_group.rds_endpoint.id
+}
+
+output "sns_endpoint_security_group_id" {
+  description = "The ID of the sns endpoint security group"
+  value       = aws_security_group.sns_endpoint_sg.id
+}
+
+output "vpn_cloudwatch_log_group_name" {
+  description = "The name of the cloudwatch log group for vpn"
+  value       = aws_cloudwatch_log_group.vpn_logs.name
+}
+
+output "vpn_cloudwatch_log_group_arn" {
+  description = "The ARN of the cloudwatch log group for vpn"
+  value       = aws_cloudwatch_log_group.vpn_logs.arn
+}
+
+output "vpn_cloudwatch_log_group_id" {
+  description = "The ID of the cloudwatch log group for vpn"
+  value       = aws_cloudwatch_log_group.vpn_logs.id
+}
+
+output "vpn_cloudwatch_log_stream_name" {
+  description = "The name of the cloudwatch log stream for vpn"
+  value       = aws_cloudwatch_log_stream.vpn_log_stream.name
+}
+
+output "vpn_cloudwatch_log_stream_arn" {
+  description = "The ARN of the cloudwatch log stream for vpn"
+  value       = aws_cloudwatch_log_stream.vpn_log_stream.arn
+}
+
+output "vpn_cloudwatch_log_stream_id" {
+  description = "The ID of the cloudwatch log stream for vpn"
+  value       = aws_cloudwatch_log_stream.vpn_log_stream.id
 }
