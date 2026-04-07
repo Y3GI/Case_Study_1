@@ -64,7 +64,7 @@ variable "alb_cert_arn" {
     type        = string
 }
 
-variable "alb_logs_bucket_arn" {
+variable "alb_logs_bucket" {
     description = "The arn of the alb logs bucket"
     type = string
 }

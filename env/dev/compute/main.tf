@@ -103,7 +103,7 @@ module "compute" {
     #Certificate for encryption
     alb_cert_arn              = data.terraform_remote_state.certificates.outputs.server_certificate_arn
     
-    alb_logs_bucket_arn       = data.terraform_remote_state.monitoring.outputs.alb_logs_bucket_arn
+    alb_logs_bucket           = data.terraform_remote_state.monitoring.outputs.alb_logs_bucket
 
     waf_arn                   = data.terraform_remote_state.soar.outputs.waf_arn
 }

@@ -6,7 +6,7 @@ resource "aws_lb" "alb" {
     subnets = var.public_alb_subnet_ids
 
     access_logs {
-        bucket = var.alb_logs_bucket_arn
+        bucket = var.alb_logs_bucket
         enabled = true
     }
 
