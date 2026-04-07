@@ -1,4 +1,4 @@
-import json
+import re
 import boto3
 import os
 import logging
@@ -14,33 +14,32 @@ def lambda_handler(event, context):
     logger.info("SOAR Lambda Triggered by SNS Event.")
     
     try:
-        # 1. Extract the SNS message from the event wrapper
+        # 1. Grab the raw text message from SNS
         sns_message = event['Records'][0]['Sns']['Message']
+        logger.info(f"Received raw alert:\n{sns_message}")
+
+        # 2. Search the text for our specific label using Regex
+        # This looks for "attacker_ip = " followed by an IP address
+        match = re.search(r'attacker_ip\s*=\s*([0-9\.]+)', sns_message)
+
+        # 3. Safe escape: If there is no IP (like during a test or glitch), stop safely.
+        if not match:
+            logger.info("No valid IP address found in the alert. Ignoring.")
+            return {
+                'statusCode': 200,
+                'body': 'No actionable IP found.'
+            }
+
+        # 4. Extract the IP!
+        attacker_ip = match.group(1)
+        logger.warning(f"Malicious IP detected: {attacker_ip}. Initiating automated response.")
         
-        # 2. Parse the Grafana Webhook JSON payload
-        grafana_alert = json.loads(sns_message)
-        logger.info(f"Received Alert: {grafana_alert.get('title', 'Unknown Alert')}")
+        # 5. Execute the ban
+        block_ip_in_waf(attacker_ip)
         
-        # 3. Check if this is a "firing" alert (not a "resolved" notification)
-        if grafana_alert.get('state') != 'alerting':
-            logger.info("Alert is not in 'alerting' state. No action required.")
-            return {'statusCode': 200, 'body': 'Ignored non-firing alert.'}
-        
-        # 4. Extract the malicious IP address from the Grafana tags/labels
-        # (Assuming your Grafana alert passes the offending IP in a label called 'attacker_ip')
-        alerts = grafana_alert.get('alerts', [])
-        for alert in alerts:
-            attacker_ip = alert.get('labels', {}).get('attacker_ip')
-            
-            if attacker_ip:
-                logger.warning(f"Malicious IP detected: {attacker_ip}. Initiating automated response.")
-                block_ip_in_waf(attacker_ip)
-            else:
-                logger.info("No 'attacker_ip' label found in the alert payload.")
-                
         return {
             'statusCode': 200,
-            'body': json.dumps('SOAR Automated Response Completed Successfully.')
+            'body': f'SOAR Automated Response Completed. Blocked {attacker_ip}.'
         }
 
     except Exception as e:
@@ -48,6 +47,7 @@ def lambda_handler(event, context):
         # We raise the exception so AWS Lambda marks this execution as a failure, 
         # which you can then visualize on your SOAR Grafana dashboard!
         raise e
+
 
 def block_ip_in_waf(ip_address):
     """
