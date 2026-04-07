@@ -18,10 +18,3 @@ variable "email" {
     description = "Email address to send notifications to"
     type        = string
 }
-
-# Compute-specific variables
-variable "rds_proxy_sg_id" {
-    description = "RDS Proxy security group ID (from root or pre-created)"
-    type        = string
-    default     = ""  # Can be provided or left empty if using root SG
-}

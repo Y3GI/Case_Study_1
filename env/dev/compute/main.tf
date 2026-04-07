@@ -27,7 +27,18 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
+data "terraform_remote_state" "networking" {
+    backend = "s3"
+    config = {
+        bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+        key            = "env/dev/security/terraform.tfstate"
+        region         = var.region
+        encrypt        = true
+    }
+}
+
 # Read networking module outputs from S3 state
+
 data "terraform_remote_state" "networking" {
     backend = "s3"
     config = {
@@ -105,5 +116,5 @@ module "compute" {
     
     alb_logs_bucket           = data.terraform_remote_state.monitoring.outputs.alb_logs_bucket
 
-    waf_arn                   = data.terraform_remote_state.soar.outputs.waf_arn
+    waf_arn                   = data.terraform_remote_state.security.outputs.waf_arn
 }
