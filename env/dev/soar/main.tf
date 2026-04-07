@@ -41,7 +41,7 @@ module "soar" {
     tags                    = var.tags
     email                   = var.email
 
-    waf_ip_blacklist_id     = data.terraform_remote_state.security.outputs.waf_ip_blacklist_id
-    waf_ip_blacklist_name   = data.terraform_remote_state.security.outputs.waf_ip_blacklist_name
-    waf_ip_blacklist_arn    = data.terraform_remote_state.security.outputs.waf_ip_blacklist_arn 
+    waf_ip_blacklist_id     = data.terraform_remote_state.security.outputs.waf_ip_set_id
+    waf_ip_blacklist_name   = data.terraform_remote_state.security.outputs.waf_ip_set_name
+    waf_ip_blacklist_arn    = data.terraform_remote_state.security.outputs.waf_ip_set_arn 
 }
