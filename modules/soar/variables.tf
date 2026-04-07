@@ -28,3 +28,8 @@ variable "waf_ip_blacklist_id" {
     description = "WAF blacklist ID"
     type        = string
 }
+
+variable "waf_ip_blacklist_arn" {
+    description = "WAF blacklist ARN"
+    type        = string
+}

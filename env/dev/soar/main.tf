@@ -21,6 +21,8 @@ provider "aws" {
     }
 }
 
+data "aws_caller_identity" "current" {}
+
 data "terraform_remote_state" "security" {
     backend = "s3"
     config = {
@@ -41,4 +43,5 @@ module "soar" {
 
     waf_ip_blacklist_id     = data.terraform_remote_state.security.outputs.waf_ip_blacklist_id
     waf_ip_blacklist_name   = data.terraform_remote_state.security.outputs.waf_ip_blacklist_name
+    waf_ip_blacklist_arn    = data.terraform_remote_state.security.outputs.waf_ip_blacklist_arn 
 }

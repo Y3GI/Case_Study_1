@@ -55,7 +55,7 @@ resource "aws_iam_role_policy" "soar_waf_policy" {
                     "wafv2:GetIPSet",
                     "wafv2:UpdateIPSet"
                 ],
-                Resource = aws_wafv2_ip_set.waf_ip_blacklist.arn
+                Resource = var.waf_ip_blacklist_arn
             },
             {
                 Effect = "Allow",
