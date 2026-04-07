@@ -17,8 +17,6 @@ provider "aws" {
     }
 }
 
-data "aws_caller_identity" "current" {}
-
 # Read networking module outputs from S3 state
 data "terraform_remote_state" "networking" {
     backend = "s3"
