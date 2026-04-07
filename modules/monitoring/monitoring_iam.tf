@@ -51,7 +51,6 @@ resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
         Version = "2012-10-17"
         Statement = [
             {
-                # 1. Let Grafana read and query CloudWatch Logs
                 Effect = "Allow"
                 Action = [
                     "logs:DescribeLogGroups",
@@ -65,7 +64,6 @@ resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
                 Resource = "*"
             },
             {
-                # 2. Let YACE discover your Lambda functions via tags
                 Effect = "Allow"
                 Action = [
                     "tag:GetResources"
@@ -73,13 +71,19 @@ resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
                 Resource = "*"
             },
             {
-                # 3. THE FIX: Let Grafana and YACE read CloudWatch Metrics!
                 Effect = "Allow"
                 Action = [
                     "cloudwatch:ListMetrics",
                     "cloudwatch:GetMetricData",
                     "cloudwatch:GetMetricStatistics",
                     "cloudwatch:DescribeAlarms"
+                ]
+                Resource = "*"
+            },
+            {
+                Effect = "Allow"
+                Action = [
+                    "sns:Publish"
                 ]
                 Resource = "*"
             }
