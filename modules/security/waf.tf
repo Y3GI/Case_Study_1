@@ -44,11 +44,33 @@ resource "aws_wafv2_web_acl" "waf" {
     }
 
     rule {
+        name     = "rate-limit-brute-force"
+        priority = 1
+
+        action {
+            block{}
+        }
+
+        statement {
+            rate_based_statement {
+                limit = 100
+                aggregate_key_type = "IP"
+            }
+        }
+
+        visibility_config {
+            cloudwatch_metrics_enabled = true
+            metric_name = "rate-limit-brute-force-matric"
+            sampled_requests_enabled = true
+        }
+    }
+
+    rule {
         name     = "soar-auto-block-rule"
-        priority = 1 # Highest priority - evaluate this first!
+        priority = 2
     
         action {
-            block {} # If they are on the list, block them immediately
+            block {}
         }
 
         statement {
