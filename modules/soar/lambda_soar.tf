@@ -9,7 +9,7 @@ resource "aws_lambda_function" "soar_responder"{
     source_code_hash = data.archive_file.soar_zip.output_base64sha256
     function_name = "soar-responder"
     role = "${aws_iam_role.soar_lambda_role.arn}"
-    handler = "soar_responder.lambda_handler"
+    handler = "soar.lambda_handler"
     runtime = "python3.10"
     timeout = 10
 
