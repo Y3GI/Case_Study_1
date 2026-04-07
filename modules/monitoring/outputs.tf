@@ -53,11 +53,6 @@ output "monitoring_security_group_id" {
   value       = aws_security_group.monitoring_stack_sg.id
 }
 
-output "alb_logs_bucket_name" {
-  description = "The name of alb logs bucket"
-  value       = aws_s3_bucket.alb_logs.name
-}
-
 output "alb_logs_bucket_arn" {
   description = "The arn of alb logs bucket"
   value       = aws_s3_bucket.alb_logs.arn
