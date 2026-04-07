@@ -27,7 +27,7 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-data "terraform_remote_state" "networking" {
+data "terraform_remote_state" "security" {
     backend = "s3"
     config = {
         bucket         = "dev-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
