@@ -1,7 +1,5 @@
 data "aws_elb_service_account" "main" {}
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
 
