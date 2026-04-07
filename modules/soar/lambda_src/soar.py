@@ -20,7 +20,7 @@ def lambda_handler(event, context):
 
         # 2. Search the text for our specific label using Regex
         # This looks for "attacker_ip = " followed by an IP address
-        match = re.search(r'attacker_ip\s*=\s*([0-9\.]+)', sns_message)
+        match = re.search(r'httpRequest\.clientIp\s*=\s*([0-9\.]+)', sns_message)
 
         # 3. Safe escape: If there is no IP (like during a test or glitch), stop safely.
         if not match:
