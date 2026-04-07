@@ -18,3 +18,13 @@ variable "email" {
     description = "Email address to send notifications to"
     type        = string
 }
+
+variable "waf_ip_blacklist_name" {
+    description = "WAF blacklist name"
+    type        = string
+}
+
+variable "waf_ip_blacklist_id" {
+    description = "WAF blacklist ID"
+    type        = string
+}

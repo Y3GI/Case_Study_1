@@ -15,8 +15,8 @@ resource "aws_lambda_function" "soar_responder"{
 
     environment {
         variables = {
-            WAF_IP_SET_NAME = aws_wafv2_ip_set.waf_ip_blacklist.name
-            WAF_IP_SET_ID = aws_wafv2_ip_set.waf_ip_blacklist.id
+            WAF_IP_SET_NAME = var.waf_ip_blacklist_name
+            WAF_IP_SET_ID = var.waf_ip_blacklist_id
             WAF_SCOPE = "REGIONAL"
         }
     }

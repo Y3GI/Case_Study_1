@@ -22,33 +22,3 @@ output "sns_topic_name" {
     description = "Name of the SNS topic for Grafana alerts"
     value       = aws_sns_topic.sns.name
 }
-
-output "waf_ip_set_name" {
-    description = "Name of the WAF IP set for blacklisting"
-    value       = aws_wafv2_ip_set.waf_ip_blacklist.name
-}
-
-output "waf_ip_set_arn" {
-    description = "ARN of the WAF IP set for blacklisting"
-    value       = aws_wafv2_ip_set.waf_ip_blacklist.arn
-}
-
-output "waf_ip_set_id" {
-    description = "ID of the WAF IP set for blacklisting"
-    value       = aws_wafv2_ip_set.waf_ip_blacklist.id
-}
-
-output "waf_name" {
-    description = "Name of the WAF"
-    value       = aws_wafv2_web_acl.waf.name
-}
-
-output "waf_arn" {
-    description = "ARN of the WAF"
-    value       = aws_wafv2_web_acl.waf.arn
-}
-
-output "waf_id" {
-    description = "ID of the WAF"
-    value       = aws_wafv2_web_acl.waf.id
-}
