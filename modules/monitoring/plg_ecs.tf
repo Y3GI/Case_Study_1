@@ -1,5 +1,7 @@
 data "aws_elb_service_account" "main" {}
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_ecs_cluster" "monitoring" {
     name = "${var.env}-monitoring-cluster"
 
@@ -107,7 +109,7 @@ resource "aws_ecs_service" "monitoring_ecs" {
 #ALB monitoring
 
 resource "aws_s3_bucket" "alb_logs"{
-    bucket = "${var.env}-alb-access-logs"
+    bucket = "${var.env}-alb-access-logs-${data.aws_caller_identity.current.account_id}"
     force_destroy = true
 
     tags = var.tags
