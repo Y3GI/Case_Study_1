@@ -25,22 +25,33 @@ otelcol.exporter.loki "default" {
 loki.process "geoip" {
   forward_to = [loki.write.local.receiver]
   
+  // Step A: Open the OpenTelemetry "envelope" to extract the raw AWS log string
   stage.json {
     expressions = {
-      client_ip = "client-ip",
+      "raw_body" = "body",
     }
   }
   
+  // Step B: Parse that extracted string to find the actual client IP
+  stage.json {
+    source = "raw_body"
+    expressions = {
+      "client_ip" = "client-ip",
+    }
+  }
+  
+  // Step C: Translate the IP to coordinates
   stage.geoip {
     db = "/etc/alloy/GeoLite2-City.mmdb"
     source = "client_ip"
     db_type = "city"
   }
   
+  // Step D: Attach the coordinates as labels
   stage.labels {
     values = {
-      geoip_latitude = "",
-      geoip_longitude = "",
+      "geoip_latitude" = "",
+      "geoip_longitude" = "",
     }
   }
 }
