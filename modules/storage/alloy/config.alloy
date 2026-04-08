@@ -25,21 +25,30 @@ otelcol.exporter.loki "default" {
 loki.process "geoip" {
   forward_to = [loki.write.local.receiver]
   
-  // Step A: Use Regex to cut through the JSON envelopes and extract the IP address
-  stage.regex {
-    expression = "(?i)client-ip[^0-9]+(?P<client_ip>[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"
+  // Step A: Safely open the OpenTelemetry envelope
+  stage.json {
+    expressions = {
+      "raw_body" = "body",
+    }
   }
   
-  // Step B: Translate the IP to coordinates
+  // Step B: Use Regex on the cleanly unwrapped string to grab the public IP
+  stage.regex {
+    source = "raw_body"
+    expression = "\"device-ip\":\"(?P<device_ip>[^\"]+)\""
+  }
+  
+  // Step C: Translate the IP to coordinates
   stage.geoip {
     db = "/etc/alloy/GeoLite2-City.mmdb"
     source = "device_ip"
     db_type = "city"
   }
   
-  // Step C: Attach the coordinates as labels
+  // Step D: Expose the IP and Coordinates directly to Grafana
   stage.labels {
     values = {
+      "device_ip" = "",
       "geoip_latitude" = "",
       "geoip_longitude" = "",
     }

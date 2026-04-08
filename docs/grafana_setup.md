@@ -52,7 +52,8 @@ Navigate to **Dashboards** -> **+ New dashboard**. Add the following panels to m
 * **Visualization:** `Geomap`
 * **Data Source:** `Loki`
 * **Query:** ```logql
-  {awslogs_stream_prefix="alloy"} |= "connection-attempt" |= "successful"
+   {exporter="OTLP"} |= "connection-attempt" |= "successful"
+            ```
   * **Geomap Settings:**
   * Location mode: `Coords`
   * Latitude field: `geoip_latitude`
