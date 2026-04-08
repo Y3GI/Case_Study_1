@@ -53,3 +53,33 @@ Navigate to **Dashboards** -> **+ New dashboard**. Add the following panels to m
 * **Data Source:** `Loki`
 * **Query:** ```logql
   {awslogs_stream_prefix="promtail"} |= "connection-attempt" |= "successful"
+  * **Geomap Settings:**
+  * Location mode: `Coords`
+  * Latitude field: `geoip_latitude`
+  * Longitude field: `geoip_longitude`
+* *Note: Requires the custom Promtail container with the MaxMind GeoLite2 City database.*
+
+### Panel 2: SOAR Lambda Executions (CloudWatch)
+* **Visualization:** `Time series`
+* **Data Source:** `CloudWatch`
+* **Query Type:** `CloudWatch Metrics`
+* **Namespace:** `AWS/Lambda`
+* **Metric Name:** `Invocations` & `Errors`
+* **Dimensions:** `FunctionName` = `soar-execution-lambda`
+* **Statistic:** `Sum`
+
+### Panel 3: Aurora RDS CPU Utilization (CloudWatch)
+* **Visualization:** `Gauge`
+* **Data Source:** `CloudWatch`
+* **Query Type:** `CloudWatch Metrics`
+* **Namespace:** `AWS/RDS`
+* **Metric Name:** `CPUUtilization`
+* **Dimensions:** `DBInstanceIdentifier` = `<your-db-identifier>`
+* **Statistic:** `Average`
+
+### Panel 4: Active Database Connections (Prometheus)
+* **Visualization:** `Stat` or `Time series`
+* **Data Source:** `Prometheus`
+* **Query:** ```promql
+  mysql_global_status_threads_connected
+* *Note: Requires the mysqld-exporter container running and connected to the Aurora Proxy.*
