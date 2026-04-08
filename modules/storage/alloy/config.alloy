@@ -27,7 +27,7 @@ loki.process "geoip" {
   
   stage.json {
     expressions = {
-      client_ip = "client-ip"
+      client_ip = "client-ip",
     }
   }
   
@@ -40,7 +40,7 @@ loki.process "geoip" {
   stage.labels {
     values = {
       geoip_latitude = "",
-      geoip_longitude = ""
+      geoip_longitude = "",
     }
   }
 }
