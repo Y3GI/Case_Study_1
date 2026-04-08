@@ -52,12 +52,12 @@ Navigate to **Dashboards** -> **+ New dashboard**. Add the following panels to m
 * **Visualization:** `Geomap`
 * **Data Source:** `Loki`
 * **Query:** ```logql
-  {awslogs_stream_prefix="promtail"} |= "connection-attempt" |= "successful"
+  {awslogs_stream_prefix="alloy"} |= "connection-attempt" |= "successful"
   * **Geomap Settings:**
   * Location mode: `Coords`
   * Latitude field: `geoip_latitude`
   * Longitude field: `geoip_longitude`
-* *Note: Requires the custom Promtail container with the MaxMind GeoLite2 City database.*
+* *Note: Requires the custom alloy container with the MaxMind GeoLite2 City database.*
 
 ### Panel 2: SOAR Lambda Executions (CloudWatch)
 * **Visualization:** `Time series`

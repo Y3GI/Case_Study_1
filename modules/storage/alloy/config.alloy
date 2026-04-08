@@ -1,0 +1,53 @@
+// 1. Pull the logs from AWS CloudWatch
+otelcol.receiver.awscloudwatch "vpn_logs" {
+  region = "eu-central-1"
+  logs {
+    poll_interval = "1m"
+    groups {
+      named {
+        // MAKE SURE THIS MATCHES YOUR CLOUDWATCH LOG GROUP EXACTLY
+        group_name = "/aws/vpn/dev-client-vpn" 
+      }
+    }
+  }
+  // Send the raw OTel logs to the Loki exporter
+  output {
+    logs = [otelcol.exporter.loki.default.input]
+  }
+}
+
+// 2. Convert OTel format to Loki format
+otelcol.exporter.loki "default" {
+  forward_to = [loki.process.geoip.receiver]
+}
+
+// 3. Process the JSON and attach the GeoIP Lat/Lon
+loki.process "geoip" {
+  forward_to = [loki.write.local.receiver]
+  
+  stage.json {
+    expressions = {
+      client_ip = "client-ip"
+    }
+  }
+  
+  stage.geoip {
+    db = "/etc/alloy/GeoLite2-City.mmdb"
+    source = "client_ip"
+    db_type = "city"
+  }
+  
+  stage.labels {
+    values = {
+      geoip_latitude = "",
+      geoip_longitude = ""
+    }
+  }
+}
+
+// 4. Push the enriched logs directly to the Loki database container
+loki.write "local" {
+  endpoint {
+    url = "http://localhost:3100/loki/api/v1/push"
+  }
+}

@@ -110,14 +110,14 @@ output "ecr_loki_repository_arn" {
   value       = aws_ecr_repository.loki.arn
 }
 
-output "ecr_promtail_repository_url" {
-  description = "The URL of the Promtail ECR repository"
-  value       = aws_ecr_repository.promtail.repository_url
+output "ecr_alloy_repository_url" {
+  description = "The URL of the alloy ECR repository"
+  value       = aws_ecr_repository.alloy.repository_url
 }
 
-output "ecr_promtail_repository_arn" {
-  description = "The ARN of the Promtail ECR repository"
-  value       = aws_ecr_repository.promtail.arn
+output "ecr_alloy_repository_arn" {
+  description = "The ARN of the alloy ECR repository"
+  value       = aws_ecr_repository.alloy.arn
 }
 
 output "ecr_mysql_exporter_repository_url" {

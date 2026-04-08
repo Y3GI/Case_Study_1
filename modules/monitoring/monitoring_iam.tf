@@ -54,6 +54,7 @@ resource "aws_iam_role_policy" "ecs_task_monitoring_permissions" {
                 Effect = "Allow"
                 Action = [
                     "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams",
                     "logs:FilterLogEvents",
                     "logs:GetLogEvents",
                     "logs:GetLogGroupFields",

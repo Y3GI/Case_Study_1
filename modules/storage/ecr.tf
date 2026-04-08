@@ -28,13 +28,13 @@ resource "aws_ecr_repository" "loki" {
     })
 }
 
-resource "aws_ecr_repository" "promtail" {
-    name = "${var.env}-promtail"
+resource "aws_ecr_repository" "alloy" {
+    name = "${var.env}-alloy"
     image_tag_mutability = "MUTABLE"
     force_delete = true
 
     tags = merge(var.tags, {
-        Name = "${var.env}-promtail"
+        Name = "${var.env}-alloy"
     })
 }
 

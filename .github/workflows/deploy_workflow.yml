@@ -77,9 +77,9 @@ jobs:
                 docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest ${{ github.workspace }}/modules/storage/loki/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest
 
-                echo "Building and pushing Promtail..."
-                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-promtail:latest ${{ github.workspace }}/modules/storage/promtail/
-                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-promtail:latest
+                echo "Building and pushing alloy..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-alloy:latest ${{ github.workspace }}/modules/storage/alloy/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-alloy:latest
 
                 echo "Building and pushing mysql exporter..."
                 docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest ${{ github.workspace }}/modules/storage/matrix_exporter/

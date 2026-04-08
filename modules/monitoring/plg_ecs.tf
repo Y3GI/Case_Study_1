@@ -74,15 +74,15 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             }
         },
         {
-            name = "promtail"
-            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-promtail:latest"
+            name = "alloy"
+            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-alloy:latest"
             essential = true
             logConfiguration = {
                 logDriver = "awslogs"
                 options = {
                     "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name
                     "awslogs-region" = var.region
-                    "awslogs-stream-prefix" = "promtail"
+                    "awslogs-stream-prefix" = "alloy"
                 }
             }
         },
