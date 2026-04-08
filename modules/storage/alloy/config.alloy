@@ -32,11 +32,11 @@ loki.process "geoip" {
     }
   }
   
-  // Step B: Parse that extracted string to find the actual client IP
+ // Step B: Parse that extracted string to find the actual client IP
   stage.json {
     source = "raw_body"
     expressions = {
-      "client_ip" = "client-ip",
+      "client_ip" = "\"client-ip\"",
     }
   }
   
