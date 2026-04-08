@@ -33,7 +33,7 @@ loki.process "geoip" {
   // Step B: Translate the IP to coordinates
   stage.geoip {
     db = "/etc/alloy/GeoLite2-City.mmdb"
-    source = "client_ip"
+    source = "device_ip"
     db_type = "city"
   }
   
