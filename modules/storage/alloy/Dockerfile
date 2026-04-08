@@ -7,4 +7,4 @@ COPY config.alloy /etc/alloy/config.alloy
 COPY GeoLite2-City.mmdb /etc/alloy/GeoLite2-City.mmdb
 
 # Run Alloy
-CMD ["run", "--server.http.listen-addr=0.0.0.0:12345", "/etc/alloy/config.alloy"]
+CMD ["run", "--server.http.listen-addr=0.0.0.0:12345", "--stability.level=experimental", "/etc/alloy/config.alloy"]
