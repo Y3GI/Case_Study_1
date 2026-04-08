@@ -11,4 +11,8 @@ datasources:
     jsonData:
       defaultRegion: eu-central-1
       authType: default
-    isDefault: true
+  - name: Loki
+    type: loki
+    url: http://localhost:3100
+    access: proxy
+    editable: true

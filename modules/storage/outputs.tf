@@ -100,6 +100,26 @@ output "ecr_prometheus_repository_arn" {
   value       = aws_ecr_repository.prometheus.arn
 }
 
+output "ecr_loki_repository_url" {
+  description = "The URL of the Loki ECR repository"
+  value       = aws_ecr_repository.loki.repository_url
+}
+
+output "ecr_loki_repository_arn" {
+  description = "The ARN of the Loki ECR repository"
+  value       = aws_ecr_repository.loki.arn
+}
+
+output "ecr_promtail_repository_url" {
+  description = "The URL of the Promtail ECR repository"
+  value       = aws_ecr_repository.promtail.repository_url
+}
+
+output "ecr_promtail_repository_arn" {
+  description = "The ARN of the Promtail ECR repository"
+  value       = aws_ecr_repository.promtail.arn
+}
+
 output "ecr_mysql_exporter_repository_url" {
   description = "The URL of the matrix exporter ECR repository"
   value       = aws_ecr_repository.mysql_exporter.repository_url

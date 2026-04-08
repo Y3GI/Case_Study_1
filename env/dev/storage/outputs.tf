@@ -57,6 +57,16 @@ output "ecr_prometheus_repository_url" {
     value       = module.storage.ecr_prometheus_repository_url
 }
 
+output "ecr_loki_repository_url" {
+    description = "Prometheus ECR repository URL"
+    value       = module.storage.ecr_loki_repository_url
+}
+
+output "ecr_promtail_repository_url" {
+    description = "Prometheus ECR repository URL"
+    value       = module.storage.ecr_promtail_repository_url
+}
+
 output "ecr_mysql_exporter_repository_url"{
     description = "Matrix exporter ECR repository URL"
     value       = module.storage.ecr_mysql_exporter_repository_url

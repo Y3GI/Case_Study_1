@@ -73,6 +73,14 @@ jobs:
                 docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest ${{ github.workspace }}/modules/storage/prometheus/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-prometheus:latest
 
+                echo "Building and pushing Loki..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest ${{ github.workspace }}/modules/storage/loki/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-loki:latest
+
+                echo "Building and pushing Promtail..."
+                docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-promtail:latest ${{ github.workspace }}/modules/storage/promtail/
+                docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-promtail:latest
+
                 echo "Building and pushing mysql exporter..."
                 docker build -t $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest ${{ github.workspace }}/modules/storage/matrix_exporter/
                 docker push $ECR_REGISTRY/${{ env.ENV_NAME }}-mysql-exporter:latest

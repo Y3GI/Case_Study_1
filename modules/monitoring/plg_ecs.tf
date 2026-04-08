@@ -60,6 +60,33 @@ resource "aws_ecs_task_definition" "monitoring_stack" {
             }
         },
         {
+            name = "loki"
+            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-loki:latest"
+            essential = true
+            portMappings = [{containerPort = 3100, hostPort = 3100}]
+            logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name
+                    "awslogs-region" = var.region
+                    "awslogs-stream-prefix" = "loki"
+                }
+            }
+        },
+        {
+            name = "promtail"
+            image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-promtail:latest"
+            essential = true
+            logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    "awslogs-group" = aws_cloudwatch_log_group.monitoring_logs.name
+                    "awslogs-region" = var.region
+                    "awslogs-stream-prefix" = "promtail"
+                }
+            }
+        },
+        {
             name = "mysqld-exporter"
             image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.env}-mysql-exporter:latest"
             essential = true
