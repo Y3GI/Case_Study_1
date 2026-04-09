@@ -372,6 +372,18 @@ Connection Pool Settings:
 - **Configuration:** Same as Grafana
 - **Role:** Exports Aurora RDS metrics to Prometheus
 
+**Loki Repository** (`aws_ecr_repository.loki`)
+- **Name:** `dev-loki`
+- **Purpose:** Stores Loki log aggregation service Docker image
+- **Configuration:** Same as Grafana
+- **Role:** Aggregates and stores logs from Alloy and other sources
+
+**Alloy Repository** (`aws_ecr_repository.alloy`)
+- **Name:** `dev-alloy`
+- **Purpose:** Stores Grafana Alloy telemetry collection engine Docker image
+- **Configuration:** Same as Grafana
+- **Role:** Collects, enriches, and forwards logs to Loki
+
 #### 9. **Docker Images** (source files in `modules/storage/`)
 
 **Grafana Dockerfile** (`grafana/Dockerfile`)
@@ -398,16 +410,80 @@ Connection Pool Settings:
 - **Purpose:** Exports Aurora RDS metrics (connections, queries, locks, etc.)
 - **Configuration:** Connects via Secrets Manager credentials
 
+**Loki Dockerfile** (`loki/Dockerfile`)
+- **Base Image:** Loki official (grafana/loki:latest)
+- **Port:** 3100
+- **Purpose:** Log aggregation and storage service
+- **Configuration:** Receives logs from Alloy via HTTP API
+- **Data Storage:** In-memory or persistent storage for log retention
+
+**Alloy Dockerfile** (`alloy/Dockerfile`)
+- **Base Image:** Grafana Alloy official (grafana/alloy:latest)
+- **Port:** 12345 (HTTP server for Alloy API)
+- **Purpose:** Observability collector and log enrichment engine
+- **Configuration:** Specified in `config.alloy` file
+- **Features:**
+  - Pulls logs from AWS CloudWatch
+  - Enriches logs with GeoIP data from MaxMind database
+  - Converts OpenTelemetry format to Loki format
+  - Forwards enriched logs to Loki
+
 #### 10. **Datasource Configuration** (`grafana/datasource.yml`)
 ```yaml
+# Prometheus datasource for metrics
 name: Prometheus
 type: prometheus
 url: http://prometheus:9090  # Internal DNS within ECS cluster
+
+# Loki datasource for logs
+name: Loki
+type: loki
+url: http://loki:3100  # Internal DNS within ECS cluster
 ```
+
+#### 11. **Alloy Configuration** (`alloy/config.alloy`)
+
+**Purpose:** Collect and enrich logs with geolocation data
+
+**Data Flow:**
+1. **CloudWatch Receiver**
+   - Source: `/aws/vpn/dev-client-vpn` log group
+   - Poll Interval: 1 minute
+   - Extracts: VPN client connection logs with device IPs
+
+2. **OTel to Loki Conversion**
+   - Converts OpenTelemetry format to Loki format
+   - Preserves log structure and metadata
+
+3. **GeoIP Enrichment Stage**
+   - Database: `GeoLite2-City.mmdb` (MaxMind)
+   - Extracts device IP from log using regex
+   - Translates IP to geographic coordinates (latitude/longitude)
+   - Adds labels: `device_ip`, `geoip_latitude`, `geoip_longitude`
+
+4. **Loki Export**
+   - Endpoint: `http://localhost:3100/loki/api/v1/push`
+   - Pushes enriched logs with geographic data
+   - Enables geographic mapping of VPN connections in Grafana
+
+**Key Features:**
+- Automatic IP geolocation enrichment
+- OpenTelemetry compliance
+- Real-time log processing pipeline
+- Cloud-native observability data collection
+- VPN security and access tracking
+
+#### 12. **MaxMind GeoIP Database**
+- **File:** `alloy/GeoLite2-City.mmdb`
+- **Purpose:** Geolocation database for IP-to-coordinate translation
+- **License:** MaxMind Community License (free tier)
+- **Coverage:** City-level geographic data for public IP addresses
+- **Usage:** Enables mapping of VPN client connections and traffic sources to geographic locations in Grafana dashboards
+- **Integration:** Loaded by Alloy during container startup
 
 ### Architecture Flow
 
-**Data Flow:**
+**Data Flow - Metrics:**
 ```
 Aurora MySQL Cluster
     ↓ (metrics export)
@@ -417,6 +493,28 @@ Prometheus (port 9090)
     ↓ (time-series data)
 Grafana (port 3000)
     ↓ (HTTP/visualization)
+Monitoring Dashboard (browser)
+```
+
+**Data Flow - Logs:**
+```
+AWS CloudWatch VPN Logs (/aws/vpn/dev-client-vpn)
+    ↓ (poll every 1 minute)
+Alloy (port 12345)
+    ├─ Extract device IP
+    ├─ Enrich with GeoIP data (GeoLite2-City.mmdb)
+    └─ Convert to Loki format
+    ↓
+Loki (port 3100)
+    ├─ Aggregate and index logs
+    ├─ Store with geographic labels
+    └─ Enable log queries
+    ↓
+Grafana (port 3000)
+    ├─ Query logs from Loki
+    ├─ Display with geographic mapping
+    └─ Visualize VPN connection patterns
+    ↓
 Monitoring Dashboard (browser)
 ```
 
@@ -456,6 +554,7 @@ Monitoring Dashboard (browser)
 - DB subnet group name
 - Security group IDs
 - Secrets Manager secret ARN
+- ECR repository URLs (Grafana, Prometheus, MySQL Exporter, Loki, Alloy)
 
 ### Performance Tuning
 - **Connection Pooling:** RDS Proxy reduces database connection overhead
@@ -468,7 +567,7 @@ Monitoring Dashboard (browser)
 ## Monitoring Module
 
 ### Purpose
-The Monitoring module implements a comprehensive observability stack using ECS Fargate to run containerized Prometheus, Grafana, and MySQL Exporter services. It provides metrics collection, visualization, budget tracking via AWS Budgets, and IAM roles for secure resource access.
+The Monitoring module implements a comprehensive observability stack using ECS Fargate to run containerized Prometheus, Grafana, Loki, Alloy, and MySQL Exporter services. It provides metrics collection, log aggregation with GeoIP enrichment, visualization, budget tracking via AWS Budgets, and IAM roles for secure resource access.
 
 ### Components
 
@@ -556,7 +655,57 @@ Logging:
 - Provides query language (PromQL) for metrics analysis
 - Retention: 15 days by default (configurable)
 
-**Container 3: MySQL Exporter**
+**Container 3: Loki**
+```
+Name: loki
+Image: {AWS_ACCOUNT_ID}.dkr.ecr.eu-central-1.amazonaws.com/{env}-loki:latest
+Port: 3100
+Essential: Yes
+
+Logging:
+- Driver: CloudWatch
+- Log Group: /ecs/dev-monitoring
+- Stream Prefix: loki
+```
+
+**Purpose:** Log aggregation and storage service
+- Receives enriched logs from Alloy
+- Indexes logs with labels (including geographic data)
+- Provides LogQL query language for log analysis
+- Enables efficient log searching and filtering
+- Stores logs with retention policies (configurable)
+
+**Container 4: Alloy**
+```
+Name: alloy
+Image: {AWS_ACCOUNT_ID}.dkr.ecr.eu-central-1.amazonaws.com/{env}-alloy:latest
+Port: 12345 (HTTP API)
+Essential: Yes
+
+Configuration File: /etc/alloy/config.alloy (mounted)
+Database File: /etc/alloy/GeoLite2-City.mmdb (MaxMind)
+
+Logging:
+- Driver: CloudWatch
+- Log Group: /ecs/dev-monitoring
+- Stream Prefix: alloy
+```
+
+**Purpose:** Observability data collector and log enrichment
+- Pulls logs from AWS CloudWatch (/aws/vpn/dev-client-vpn)
+- Enriches logs with geolocation data using MaxMind database
+- Converts OpenTelemetry format to Loki format
+- Forwards enriched logs to Loki
+- Enables geographic analysis of VPN connections and traffic
+
+**Data Enhancement Pipeline:**
+1. Extract CloudWatch logs from VPN endpoint
+2. Parse device IP address from log entries
+3. Look up geographic coordinates for IP (latitude/longitude)
+4. Append as log labels
+5. Forward to Loki for storage and querying
+
+**Container 5: MySQL Exporter**
 ```
 Name: mysqld-exporter
 Image: {AWS_ACCOUNT_ID}.dkr.ecr.eu-central-1.amazonaws.com/{env}-mysql-exporter:latest
@@ -624,12 +773,15 @@ Notification Trigger: 80% threshold
 
 **Monitoring Security Group** (`aws_security_group.monitoring_sg`)
 - **Inbound Rules:**
-  - Port 3000 from private VPC CIDR (Grafana)
-  - Port 9090 from private VPC CIDR (Prometheus query)
+  - Port 3000 from private VPC CIDR (Grafana UI)
+  - Port 9090 from private VPC CIDR (Prometheus query/metrics)
   - Port 9104 from private VPC CIDR (MySQL Exporter metrics)
+  - Port 3100 from private VPC CIDR (Loki logs API)
+  - Port 12345 from private VPC CIDR (Alloy HTTP API)
 - **Outbound Rules:**
-  - All traffic to RDS Proxy (SQL queries)
+  - All traffic to RDS Proxy (SQL queries for metrics)
   - All traffic to Secrets Manager (credential retrieval)
+  - All traffic to CloudWatch (log collection by Alloy)
   - HTTPS outbound (for potential external integrations)
 
 **RDS Proxy Security Group Modifications:**
@@ -645,7 +797,7 @@ Notification Trigger: 80% threshold
 
 ### Architecture Diagram
 
-**Monitoring Stack Data Flow:**
+**Monitoring Stack Metrics Data Flow:**
 ```
 Prometheus (port 9090)
     ↓ (scrapes every 15 seconds)
@@ -658,8 +810,46 @@ Aurora MySQL Cluster
 Prometheus Database (TSDB)
     ↓ (query via HTTP)
 Grafana (port 3000)
-    ↓ (visualize)
+    ↓ (visualize metrics)
 Dashboard (browser, port 3000)
+```
+
+**Monitoring Stack Logs Data Flow:**
+```
+AWS CloudWatch VPN Logs (/aws/vpn/dev-client-vpn)
+    ↓ (poll every 1 minute)
+Alloy (port 12345)
+    ├─ Parse device IP
+    ├─ Enrich with GeoIP (GeoLite2-City.mmdb)
+    └─ Convert OTel → Loki format
+    ↓
+Loki (port 3100)
+    ├─ Aggregate logs
+    ├─ Index with geographic labels
+    └─ Enable LogQL queries
+    ↓
+Grafana (port 3000)
+    ├─ Query logs from Loki
+    ├─ Display with geographic mapping
+    └─ Visualize VPN connection patterns
+    ↓
+Dashboard (browser, port 3000)
+```
+
+**Integrated Observability:**
+```
+Grafana Dashboard (port 3000)
+├─ Metrics Tab
+│  └─ Query Prometheus (port 9090)
+│     ├─ Database performance metrics
+│     ├─ System resource utilization
+│     └─ Application health
+│
+└─ Logs Tab
+   └─ Query Loki (port 3100)
+      ├─ VPN connection logs
+      ├─ Geographic distribution of connections
+      └─ Access patterns and anomalies
 ```
 
 ### Metrics Collected
@@ -726,22 +916,31 @@ The deploy_workflow.yml includes monitoring-specific steps:
     
     docker build -t $ECR_REGISTRY/${env}-mysql-exporter:latest ./modules/storage/matrix_exporter/
     docker push $ECR_REGISTRY/${env}-mysql-exporter:latest
+    
+    docker build -t $ECR_REGISTRY/${env}-loki:latest ./modules/storage/loki/
+    docker push $ECR_REGISTRY/${env}-loki:latest
+    
+    docker build -t $ECR_REGISTRY/${env}-alloy:latest ./modules/storage/alloy/
+    docker push $ECR_REGISTRY/${env}-alloy:latest
 ```
 
 ### Security Considerations
 - **Private Network:** ECS task runs in private VPC subnets
-- **No Direct Internet:** Monitoring stack cannot initiate outbound connections
+- **No Direct Internet:** Monitoring stack cannot initiate outbound connections (except CloudWatch API)
 - **Credentials Management:** DB credentials passed via environment variables (Secrets Manager integration)
 - **IAM Roles:** Task roles restrict permissions to minimum required
 - **Logging:** All container output logged to CloudWatch for audit trail
 - **Task Role Isolation:** Separate execution and task roles for least privilege
+- **VPN Log Encryption:** CloudWatch Logs from VPN endpoint are encrypted
 
 ### Limitations & Considerations
 - **Single Task:** Currently runs as single Fargate task (no auto-scaling)
-- **No Alerts:** Prometheus rules configured but no SNS notifications (can be added)
-- **Storage:** Prometheus data persists in EBS-backed task storage (7-day retention)
+- **Metrics Storage:** Prometheus data persists in EBS-backed task storage (15-day retention, configurable)
+- **Logs Storage:** Loki data persists in EBS-backed task storage (retention configurable)
 - **Memory:** 2GB memory may be limiting for large datasets; can be increased
-- **Scaling:** For production, consider ECS auto-scaling or Prometheus clustering
+- **Scaling:** For production, consider ECS auto-scaling or clustering
+- **No Alerts:** Prometheus rules configured but no SNS notifications (can be added)
+- **GeoIP Updates:** MaxMind database not auto-updated; manual refresh needed
 
 ### Dependencies
 - **Networking Module** - Requires private VPC, subnets, security groups

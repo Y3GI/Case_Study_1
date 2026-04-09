@@ -32,10 +32,10 @@ loki.process "geoip" {
     }
   }
   
-  // Step B: Use Regex on the cleanly unwrapped string to grab the public IP
+// Step B: Bulletproof Regex to grab the IP, ignoring all JSON formatting, slashes, and spaces
   stage.regex {
     source = "raw_body"
-    expression = "\"device-ip\":\"(?P<device_ip>[^\"]+)\""
+    expression = "device-ip[^0-9]+(?P<device_ip>[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"
   }
   
   // Step C: Translate the IP to coordinates
