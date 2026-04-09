@@ -45,12 +45,12 @@ loki.process "geoip" {
     db_type = "city"
   }
   
-  // Step D: Expose the IP and Coordinates directly to Grafana
+  // Step D: Map MaxMind's internal variables to your Grafana labels
   stage.labels {
     values = {
       "device_ip" = "",
-      "geoip_latitude" = "",
-      "geoip_longitude" = "",
+      "geoip_latitude" = "geoip_location_latitude",    // <--- Added the correct internal name mapping
+      "geoip_longitude" = "geoip_location_longitude",  // <--- Added the correct internal name mapping
     }
   }
 }
