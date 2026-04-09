@@ -78,7 +78,7 @@ Navigate to **Dashboards** > **+ New dashboard**. Add the following panels.
   - Longitude: `geoip_longitude`
 - **Loki Query:**
 ```logql
-{exporter="OTLP"} |= "connection-attempt" |= "successful"
+sum by (device_ip, geoip_latitude, geoip_longitude) (count_over_time({exporter="OTLP"} [6h]))
 ```
 
 ### 4.2 Database Performance & Health
