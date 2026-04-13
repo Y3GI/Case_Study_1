@@ -26,8 +26,14 @@ This document outlines the core architectural decisions made during the developm
 
 * **Justification:** Separation of concerns. The lifecycle, scaling rules, and IAM permissions of the observability stack differ vastly from the application compute layer (Lambda). Keeping ECS scoped to the monitoring module prevents permission scope creep.
 
-## 5. Observability: Native CloudWatch vs. Third-Party Exporters
+## 5. Observability: ECS-hosted PLG Stack vs. EC2/Traditional
 
-**Decision:** We utilize Grafana's native CloudWatch plugin to monitor AWS Lambda metrics, actively choosing to remove YACE (Yet Another CloudWatch Exporter).
+**Decision:** The monitoring stack (Prometheus, Loki, Grafana) is deployed as ECS Fargate tasks in the Private VPC, rather than on EC2 instances.
 
-* **Justification:** YACE relies on the AWS Resource Groups Tagging API, which *does not support VPC Endpoints*. Because our Private VPC prohibits internet access via NAT Gateway, YACE cannot resolve the Tagging API. Grafana's native integration routes perfectly through our `.monitoring` VPC endpoint, achieving the same result natively and securely.
+* **Justification:** ECS Fargate eliminates the need to manage underlying infrastructure, reducing operational overhead. Containers are deployed within the Private VPC, utilizing VPC Interface Endpoints for secure communication with AWS services (ECR, CloudWatch Logs, CloudWatch Metrics). The architecture supports multi-region container images stored in ECR with automatic log aggregation to CloudWatch.
+
+## 6. Observability: VPC Endpoints for ECS Monitoring Stack
+
+**Decision:** The ECS monitoring cluster communicates with AWS services exclusively through interface and gateway VPC Endpoints (ECR, CloudWatch Logs, CloudWatch Metrics, STS, OAM, S3, SNS).
+
+* **Justification:** Interface Endpoints (`ecr.api`, `ecr.dkr`, `logs`, `monitoring`, `sts`, `oam`) enable the ECS tasks to pull container images and send telemetry without internet access. This maintains the air-gapped private network while providing full observability capabilities.

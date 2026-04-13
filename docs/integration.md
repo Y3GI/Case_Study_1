@@ -25,10 +25,24 @@ This document explains how the distinct components of the architecture authentic
 
 * **Network Path:** ECS Task -> `.logs` and `.monitoring` VPC Interface Endpoints -> AWS Control Plane. Traffic never leaves the internal AWS network.
 
-## 4. Prometheus to Database (Aurora MySQL)
+## 4. ECS Monitoring Stack to AWS Services (VPC Endpoints)
 
-* **Authentication:** The `mysqld-exporter` sidecar container uses a `.my.cnf` configuration file containing database credentials.
+* **Network Path:** ECS Task -> VPC Interface Endpoints (ECR, CloudWatch Logs, CloudWatch Metrics, STS, OAM) -> AWS Control Plane.
 
-* **Network Path:** ECS Task (Port 3306) -> RDS Proxy Security Group -> Aurora Database.
+* **Integration:** ECS tasks pull container images (`grafana`, `prometheus`, `loki`, `matrix_exporter`, `alloy`) from ECR via the `ecr.api` and `ecr.dkr` endpoints. CloudWatch Logs are streamed via the `logs` endpoint, and metrics are published via the `monitoring` endpoint. All communication remains within the AWS internal network.
 
-* **Integration:** The exporter connects to the RDS Proxy. The proxy handles connection pooling and is configured with `require_tls = false` for internal VPC traffic, removing the need for complex container-level SSL certificate management.
+* **IAM Policies:** ECS Task Execution Role includes `ecr:GetAuthorizationToken`, `logs:CreateLogStream`, `logs:PutLogEvents`. ECS Task Role includes `cloudwatch:PutMetricData`, `logs:PutLogEvents`.
+
+## 5. Prometheus (Sidecar) to Database (Aurora MySQL)
+
+* **Authentication:** The `prometheusexporter` (MySQL exporter) sidecar container uses database credentials from AWS Secrets Manager.
+
+* **Network Path:** ECS Task -> RDS Proxy Security Group -> Aurora Database.
+
+* **Integration:** The exporter connects to the RDS Proxy endpoint. The proxy handles connection pooling and is configured with `require_tls = false` for internal VPC traffic, removing the need for complex container-level SSL certificate management.
+
+## 6. SNS Integration (Grafana Alerts to SOAR)
+
+* **Network Path:** ECS Grafana Task -> SNS VPC Endpoint -> AWS SNS -> SOAR Lambda Function.
+
+* **Integration:** Grafana alert rules send notifications to the SNS topic (`{env}-grafana-alerts`) created by the SOAR module. The SNS endpoint in the private VPC enables secure alert delivery without internet routing. The SNS topic has two subscriptions: one to the SOAR responder Lambda (for automated incident response) and one to the configured email address (for human notification).
