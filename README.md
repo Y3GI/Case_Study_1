@@ -1,6 +1,10 @@
 # Case_Study_1
 # 🛡️ Secure Serverless Monitoring Stack
 
+## Network Diagram
+
+![alt text](docs/network_diagram.png)
+
 ## Overview
 This repository contains the Infrastructure as Code (IaC) to deploy a highly secure, enterprise-grade serverless web application and monitoring stack on AWS. Built completely with Terraform, this project features a multi-VPC architecture connected via AWS Transit Gateway, with compute and database resources locked in an air-gapped private network. 
 
